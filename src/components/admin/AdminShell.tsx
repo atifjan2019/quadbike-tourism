@@ -7,8 +7,6 @@ import {
   Map,
   FolderTree,
   CalendarCheck,
-  MessagesSquare,
-  HelpCircle,
   Image as ImageIcon,
   Settings,
   LogOut,
@@ -22,8 +20,6 @@ const NAV = [
   { href: "/admin/tours", label: "Tours", icon: Map },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
   { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck },
-  { href: "/admin/testimonials", label: "Testimonials", icon: MessagesSquare },
-  { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
