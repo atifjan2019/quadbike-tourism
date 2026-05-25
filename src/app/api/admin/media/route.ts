@@ -16,6 +16,9 @@ type FileItem = {
   modifiedAt: string;
   dbId: string | null;  // matching Media row id, if any
   alt: string | null;
+  title: string | null;
+  caption: string | null;
+  description: string | null;
 };
 
 async function scanDir(sub: "images" | "uploads"): Promise<FileItem[]> {
@@ -39,6 +42,9 @@ async function scanDir(sub: "images" | "uploads"): Promise<FileItem[]> {
       modifiedAt: st.mtime.toISOString(),
       dbId: null,
       alt: null,
+      title: null,
+      caption: null,
+      description: null,
     });
   }
   return out;
@@ -53,7 +59,16 @@ export async function GET() {
   const dbByUrl = new Map(dbRows.map((r) => [r.url, r]));
   const all = [...uploads, ...images].map((f) => {
     const row = dbByUrl.get(f.url);
-    return row ? { ...f, dbId: row.id, alt: row.alt ?? null } : f;
+    return row
+      ? {
+          ...f,
+          dbId: row.id,
+          alt: row.alt ?? null,
+          title: row.title ?? null,
+          caption: row.caption ?? null,
+          description: row.description ?? null,
+        }
+      : f;
   });
   all.sort((a, b) => (a.modifiedAt < b.modifiedAt ? 1 : -1));
   return NextResponse.json({ ok: true, media: all });

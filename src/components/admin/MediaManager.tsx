@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Trash2, Upload, Copy, Folder } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Label } from "@/components/ui/Label";
+import { Trash2, Upload, Copy, X, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
 
 type FileItem = {
   id: string;
@@ -17,7 +19,12 @@ type FileItem = {
   modifiedAt: string;
   dbId: string | null;
   alt: string | null;
+  title: string | null;
+  caption: string | null;
+  description: string | null;
 };
+
+const PER_PAGE = 30;
 
 export default function MediaManager({ initial }: { initial: FileItem[] }) {
   const router = useRouter();
@@ -26,7 +33,13 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
   const [err, setErr] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "images" | "uploads">("all");
   const [query, setQuery] = useState("");
-  const [copied, setCopied] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [editing, setEditing] = useState<FileItem | null>(null);
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const visible = useMemo(() => {
     return initial.filter((m) => {
@@ -35,6 +48,11 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
       return true;
     });
   }, [initial, filter, query]);
+
+  useEffect(() => setPage(1), [filter, query]);
+  const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+  const pageSafe = Math.min(page, totalPages);
+  const pageItems = visible.slice((pageSafe - 1) * PER_PAGE, pageSafe * PER_PAGE);
 
   async function upload(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -67,13 +85,8 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
       alert(data.error || "Delete failed");
       return;
     }
+    if (editing?.url === item.url) setEditing(null);
     router.refresh();
-  }
-
-  async function copy(url: string) {
-    await navigator.clipboard.writeText(url);
-    setCopied(url);
-    setTimeout(() => setCopied(null), 1500);
   }
 
   const counts = useMemo(
@@ -96,10 +109,10 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
               e.preventDefault();
               upload(e.dataTransfer.files);
             }}
-            className="border-2 border-dashed border-black/20 rounded-lg p-8 text-center cursor-pointer hover:bg-black/[0.02]"
+            className="border-2 border-dashed border-black/20 rounded-lg p-6 text-center cursor-pointer hover:bg-black/[0.02]"
           >
-            <Upload className="w-8 h-8 mx-auto text-black/40" />
-            <p className="mt-3 font-bold">Drop images here or click to upload</p>
+            <Upload className="w-7 h-7 mx-auto text-black/40" />
+            <p className="mt-2 font-bold">Drop images here or click to upload</p>
             <p className="text-xs text-black/50 mt-1">
               JPG, PNG, WebP or AVIF. Max 8 MB each. Resized to max 1600px WebP and saved to <code>/public/uploads/</code>.
             </p>
@@ -111,7 +124,7 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
               hidden
               onChange={(e) => upload(e.target.files)}
             />
-            <Button className="mt-4" disabled={busy}>
+            <Button className="mt-3" disabled={busy}>
               {busy ? "Uploading…" : "CHOOSE FILES"}
             </Button>
           </div>
@@ -142,61 +155,257 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
           onChange={(e) => setQuery(e.target.value)}
           className="flex-1 min-w-[200px] max-w-[320px] h-9 px-3 rounded-md border border-black/20 bg-white text-sm"
         />
+        <span className="text-xs text-black/50 ml-auto">
+          {visible.length} file{visible.length === 1 ? "" : "s"}
+        </span>
       </div>
 
-      {visible.length === 0 ? (
+      {pageItems.length === 0 ? (
         <p className="text-sm text-black/60 py-10 text-center">No matching files.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {visible.map((m) => (
-            <Card key={m.id}>
-              <div className="relative w-full aspect-square bg-black/5">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
+          {pageItems.map((m) => (
+            <div
+              key={m.id}
+              className="group relative bg-white border border-black/10 rounded overflow-hidden hover:shadow-md transition"
+            >
+              <button
+                onClick={() => setEditing(m)}
+                className="block w-full relative aspect-square bg-black/5"
+              >
                 <Image
                   src={m.url}
                   alt={m.alt ?? m.filename}
                   fill
-                  sizes="220px"
+                  sizes="160px"
                   className="object-contain"
                   unoptimized
                 />
-                <Badge
-                  variant={m.source === "uploads" ? "default" : "muted"}
-                  className="absolute top-2 left-2"
-                >
-                  <Folder className="w-3 h-3 mr-1" />
-                  /{m.source}
-                </Badge>
-              </div>
-              <CardContent className="p-3 space-y-2">
-                <div className="text-xs truncate font-mono" title={m.filename}>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <Pencil className="w-5 h-5 text-white" />
+                </div>
+              </button>
+              <div className="p-1.5">
+                <div className="text-[10px] truncate font-mono text-black/70" title={m.filename}>
                   {m.filename}
                 </div>
-                <div className="text-[10px] text-black/50 flex justify-between">
-                  <span>{m.sizeKB} KB</span>
-                  <span>{new Date(m.modifiedAt).toLocaleDateString()}</span>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => copy(m.url)}
-                    className="flex-1 inline-flex items-center justify-center gap-1 text-xs font-bold uppercase border border-black/20 rounded px-2 py-1.5 hover:bg-black/5"
-                  >
-                    <Copy className="w-3 h-3" />
-                    {copied === m.url ? "Copied!" : "URL"}
-                  </button>
-                  <button
-                    onClick={() => destroy(m)}
-                    className="inline-flex items-center justify-center text-red-600 hover:text-red-800 border border-red-200 rounded px-2 py-1.5"
-                    aria-label="Delete from disk"
-                    title="Delete from disk"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-4">
+          <button
+            disabled={pageSafe === 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="inline-flex items-center gap-1 px-3 py-2 rounded-md border border-black/15 text-sm font-bold disabled:opacity-40 hover:bg-black/5"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Prev
+          </button>
+          <span className="text-sm text-black/70">
+            Page <b>{pageSafe}</b> of {totalPages}
+          </span>
+          <button
+            disabled={pageSafe === totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            className="inline-flex items-center gap-1 px-3 py-2 rounded-md border border-black/15 text-sm font-bold disabled:opacity-40 hover:bg-black/5"
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Edit modal */}
+      {editing && (
+        <EditModal
+          item={editing}
+          origin={origin}
+          onClose={() => setEditing(null)}
+          onDelete={() => destroy(editing)}
+          onSaved={() => router.refresh()}
+        />
+      )}
+    </div>
+  );
+}
+
+function EditModal({
+  item,
+  origin,
+  onClose,
+  onDelete,
+  onSaved,
+}: {
+  item: FileItem;
+  origin: string;
+  onClose: () => void;
+  onDelete: () => void;
+  onSaved: () => void;
+}) {
+  const [alt, setAlt] = useState(item.alt ?? "");
+  const [title, setTitle] = useState(item.title ?? "");
+  const [caption, setCaption] = useState(item.caption ?? "");
+  const [description, setDescription] = useState(item.description ?? "");
+  const [saving, setSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const fullUrl = origin ? `${origin}${item.url}` : item.url;
+
+  async function save() {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/media/meta", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: item.url,
+          alt: alt || null,
+          title: title || null,
+          caption: caption || null,
+          description: description || null,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || "Save failed");
+      } else {
+        onSaved();
+        onClose();
+      }
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function copy() {
+    await navigator.clipboard.writeText(fullUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-black/10 px-5 py-3">
+          <h3 className="font-bold text-lg">Edit Image</h3>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded hover:bg-black/5"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
+          {/* Preview */}
+          <div>
+            <div className="relative w-full aspect-square bg-zinc-100 rounded border border-black/10 overflow-hidden">
+              <Image
+                src={item.url}
+                alt={alt || item.filename}
+                fill
+                sizes="500px"
+                className="object-contain"
+                unoptimized
+              />
+            </div>
+            <div className="mt-3 space-y-2 text-xs text-black/60">
+              <div className="flex justify-between">
+                <span>Filename</span>
+                <span className="font-mono text-black/80">{item.filename}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Size</span>
+                <span>{item.sizeKB} KB</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Folder</span>
+                <code>/public/{item.source}/</code>
+              </div>
+              <div className="flex justify-between">
+                <span>Modified</span>
+                <span>{new Date(item.modifiedAt).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Metadata form */}
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>Full URL</Label>
+              <div className="flex gap-2">
+                <Input value={fullUrl} readOnly className="font-mono text-[12px]" />
+                <Button type="button" variant="outline" onClick={copy} className="shrink-0">
+                  <Copy className="w-4 h-4" />
+                  {copied ? "Copied!" : "Copy"}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label>Alternative Text</Label>
+              <Textarea
+                rows={2}
+                value={alt}
+                onChange={(e) => setAlt(e.target.value)}
+                placeholder="Describe the image for screen readers"
+              />
+              <p className="text-[11px] text-black/50">
+                Leave empty if the image is purely decorative.
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <Label>Title</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+            </div>
+
+            <div className="space-y-1">
+              <Label>Caption</Label>
+              <Textarea
+                rows={2}
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label>Description</Label>
+              <Textarea
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-black/10 px-5 py-3 bg-zinc-50 rounded-b-lg">
+          <Button variant="destructive" onClick={onDelete} disabled={saving}>
+            <Trash2 className="w-4 h-4" />
+            Delete file
+          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={save} disabled={saving}>
+              {saving ? "Saving…" : "Save"}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
