@@ -145,6 +145,7 @@ model BlogPost {
   seoDesc       String?
   categoryId    String?
   category      BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  faqs          Json?    // Array of { question, answer }
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

@@ -197,6 +197,12 @@ export default function BlogForm({
                         set("slug", slugify(e.target.value));
                     }}
                   />
+                  <SeoMeter
+                    value={form.title.length}
+                    min={50}
+                    max={60}
+                    unit="chars"
+                  />
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="slug">Slug</Label>
@@ -217,6 +223,12 @@ export default function BlogForm({
                   value={form.excerpt}
                   onChange={(e) => set("excerpt", e.target.value)}
                   placeholder="Short summary shown in the blog list"
+                />
+                <SeoMeter
+                  value={form.excerpt.length}
+                  min={120}
+                  max={160}
+                  unit="chars"
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

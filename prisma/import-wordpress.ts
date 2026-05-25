@@ -12,6 +12,7 @@ if (!connectionString) throw new Error("DIRECT_URL or DATABASE_URL not set");
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
 const XML_PATH = path.resolve(process.cwd(), "prisma/wordpress-export.xml");
+const DEFAULT_AUTHOR = "Ayesha";
 
 function getCdata(block: string, tag: string): string | null {
   const re = new RegExp(`<${tag}>\\s*<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>\\s*</${tag}>`);
@@ -58,6 +59,94 @@ function firstCategory(block: string): { slug: string; name: string } | null {
   return { slug: m[1], name: m[2] };
 }
 
+// Minimal PHP-serialize parser, enough for `a:N:{ s:..; a:..{ s:..; s:..; }; ... }` shape.
+// Returns the decoded value or null on failure.
+function unserialize(input: string): unknown | null {
+  const bytes = Buffer.from(input, "utf8");
+  let pos = 0;
+
+  function readUntil(ch: number): string {
+    const start = pos;
+    while (pos < bytes.length && bytes[pos] !== ch) pos++;
+    const s = bytes.subarray(start, pos).toString("utf8");
+    return s;
+  }
+  function expect(ch: string) {
+    if (bytes[pos] !== ch.charCodeAt(0)) {
+      throw new Error(`Expected '${ch}' at ${pos}, got '${String.fromCharCode(bytes[pos])}'`);
+    }
+    pos++;
+  }
+  function parse(): unknown {
+    const type = String.fromCharCode(bytes[pos]);
+    pos++;
+    expect(":");
+    if (type === "s") {
+      const lenStr = readUntil(":".charCodeAt(0));
+      const len = parseInt(lenStr, 10);
+      expect(":");
+      expect('"');
+      const s = bytes.subarray(pos, pos + len).toString("utf8");
+      pos += len;
+      expect('"');
+      expect(";");
+      return s;
+    }
+    if (type === "i") {
+      const v = readUntil(";".charCodeAt(0));
+      expect(";");
+      return parseInt(v, 10);
+    }
+    if (type === "b") {
+      const v = bytes[pos];
+      pos++;
+      expect(";");
+      return v === "1".charCodeAt(0);
+    }
+    if (type === "N") {
+      // N; (null)
+      return null;
+    }
+    if (type === "a") {
+      const lenStr = readUntil(":".charCodeAt(0));
+      const len = parseInt(lenStr, 10);
+      expect(":");
+      expect("{");
+      const obj: Record<string, unknown> = {};
+      for (let i = 0; i < len; i++) {
+        const key = parse();
+        const value = parse();
+        obj[String(key)] = value;
+      }
+      expect("}");
+      return obj;
+    }
+    throw new Error(`Unknown type '${type}' at ${pos}`);
+  }
+
+  try {
+    return parse();
+  } catch {
+    return null;
+  }
+}
+
+function parseFaqs(raw: string | null): { question: string; answer: string }[] | null {
+  if (!raw) return null;
+  const decoded = unserialize(raw);
+  if (!decoded || typeof decoded !== "object") return null;
+  const out: { question: string; answer: string }[] = [];
+  for (const v of Object.values(decoded as Record<string, unknown>)) {
+    if (v && typeof v === "object") {
+      const obj = v as Record<string, unknown>;
+      const q = typeof obj.question === "string" ? obj.question.trim() : "";
+      const a = typeof obj.answer === "string" ? obj.answer.trim() : "";
+      if (q && a) out.push({ question: q, answer: a });
+    }
+  }
+  return out.length ? out : null;
+}
+
 async function main() {
   const xml = fs.readFileSync(XML_PATH, "utf8");
   const items = splitItems(xml);
@@ -90,7 +179,7 @@ async function main() {
 
     const title = getCdata(item, "title") ?? "";
     const slug = getCdata(item, "wp:post_name") ?? "";
-    const author = getCdata(item, "dc:creator") ?? null;
+    const author = DEFAULT_AUTHOR;
     const contentRaw = getCdata(item, "content:encoded") ?? "";
     const excerptRaw = getCdata(item, "excerpt:encoded") ?? "";
     const dateGmt = getRawTag(item, "wp:post_date_gmt");
@@ -108,6 +197,7 @@ async function main() {
     const seoTitle = seoTitleRaw && seoTitleRaw !== "%title%" ? seoTitleRaw : null;
     const thumbnailId = getMeta(item, "_thumbnail_id");
     const featuredImage = thumbnailId ? attachmentUrlById.get(thumbnailId) ?? null : null;
+    const faqsParsed = parseFaqs(getMeta(item, "faqs"));
 
     let publishedAt: Date | null = null;
     if (dateGmt && dateGmt !== "0000-00-00 00:00:00") {
@@ -140,6 +230,7 @@ async function main() {
       seoTitle,
       seoDesc,
       categoryId,
+      faqs: faqsParsed ?? undefined,
     };
 
     const existing = await prisma.blogPost.findUnique({ where: { slug } });

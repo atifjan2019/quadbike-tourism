@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Table, THead, TBody, TR, TH, TD } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
-import { Plus } from "lucide-react";
+import { Plus, Pencil, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 
 export const dynamic = "force-dynamic";
@@ -74,12 +74,26 @@ export default async function BlogsPage() {
                       {format(p.updatedAt, "yyyy-MM-dd HH:mm")}
                     </TD>
                     <TD className="text-right">
-                      <Link
-                        href={`/admin/blogs/${p.id}`}
-                        className="text-sm font-bold hover:underline"
-                      >
-                        Edit
-                      </Link>
+                      <div className="inline-flex items-center gap-3 justify-end">
+                        <Link
+                          href={`/admin/blogs/${p.id}`}
+                          aria-label="Edit"
+                          title="Edit"
+                          className="p-1.5 rounded hover:bg-black/10"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Link>
+                        <Link
+                          href={`/blog/${p.slug}/`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="View public page"
+                          title="View public page"
+                          className="p-1.5 rounded hover:bg-black/10"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Link>
+                      </div>
                     </TD>
                   </TR>
                 ))

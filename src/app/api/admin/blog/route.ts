@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 
+const Faq = z.object({ question: z.string(), answer: z.string() });
+
 const Body = z.object({
   title: z.string().min(1),
   slug: z.string().min(1),
@@ -14,6 +16,7 @@ const Body = z.object({
   seoTitle: z.string().optional().nullable(),
   seoDesc: z.string().optional().nullable(),
   categoryId: z.string().optional().nullable(),
+  faqs: z.array(Faq).optional().nullable(),
 });
 
 export async function GET() {
@@ -29,9 +32,11 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ ok: false, error: parsed.error.issues }, { status: 400 });
   }
+  const { faqs, ...rest } = parsed.data;
   const data = {
-    ...parsed.data,
+    ...rest,
     publishedAt: parsed.data.publishedAt ? new Date(parsed.data.publishedAt) : null,
+    faqs: faqs ?? undefined,
   };
   const post = await prisma.blogPost.create({ data });
   return NextResponse.json({ ok: true, post });
