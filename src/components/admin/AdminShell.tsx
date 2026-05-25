@@ -22,6 +22,7 @@ const NAV = [
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
   { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck },
   { href: "/admin/blogs", label: "Blogs", icon: Newspaper },
+  { href: "/admin/blog-categories", label: "Blog Categories", icon: FolderTree },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
