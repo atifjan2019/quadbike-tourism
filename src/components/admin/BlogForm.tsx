@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Label } from "@/components/ui/Label";
-import { Switch } from "@/components/ui/Switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { Card, CardContent } from "@/components/ui/Card";
 import QuillEditor from "./QuillEditor";
@@ -273,31 +272,89 @@ export default function BlogForm({
                   .
                 </p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
-                <label className="flex items-center gap-2 text-sm">
-                  <Switch
-                    checked={form.status === "PUBLISHED"}
-                    onCheckedChange={(v) => set("status", v ? "PUBLISHED" : "DRAFT")}
-                  />
-                  <span className="font-semibold">Published</span>
-                </label>
-                <div className="space-y-1">
-                  <Label>Publish Date</Label>
-                  <Input
-                    type="datetime-local"
-                    value={toLocalInputValue(form.publishedAt)}
-                    onChange={(e) =>
-                      set(
-                        "publishedAt",
-                        e.target.value ? new Date(e.target.value).toISOString() : null
-                      )
+              {(() => {
+                const now = Date.now();
+                const pubMs = form.publishedAt ? new Date(form.publishedAt).getTime() : null;
+                const displayStatus: "DRAFT" | "SCHEDULED" | "PUBLISHED" =
+                  form.status !== "PUBLISHED"
+                    ? "DRAFT"
+                    : pubMs !== null && pubMs > now
+                      ? "SCHEDULED"
+                      : "PUBLISHED";
+
+                const setStatus = (next: "DRAFT" | "SCHEDULED" | "PUBLISHED") => {
+                  if (next === "DRAFT") {
+                    set("status", "DRAFT");
+                    // keep publishedAt — it's preserved if they re-publish later
+                  } else if (next === "PUBLISHED") {
+                    set("status", "PUBLISHED");
+                    if (!form.publishedAt || (pubMs !== null && pubMs > now)) {
+                      set("publishedAt", new Date().toISOString());
                     }
-                  />
-                  <p className="text-[11px] text-black/50">
-                    Auto-set to now when first publishing if left blank.
-                  </p>
-                </div>
-              </div>
+                  } else {
+                    // SCHEDULED — needs a future date
+                    set("status", "PUBLISHED");
+                    if (!form.publishedAt || pubMs === null || pubMs <= now) {
+                      const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
+                      set("publishedAt", tomorrow.toISOString());
+                    }
+                  }
+                };
+
+                const pillBase =
+                  "px-4 h-9 inline-flex items-center justify-center font-bold text-[12px] uppercase tracking-[2px] rounded transition border-2";
+                const pillActive: Record<typeof displayStatus, string> = {
+                  DRAFT: "bg-zinc-200 text-zinc-800 border-zinc-400",
+                  SCHEDULED: "bg-amber-100 text-amber-900 border-amber-400",
+                  PUBLISHED: "bg-emerald-100 text-emerald-900 border-emerald-500",
+                };
+                const pillInactive = "bg-white text-black/60 border-black/15 hover:bg-black/5";
+
+                return (
+                  <div className="space-y-3 pt-2 border-t border-black/10">
+                    <Label>Status</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {(["DRAFT", "SCHEDULED", "PUBLISHED"] as const).map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setStatus(s)}
+                          className={`${pillBase} ${displayStatus === s ? pillActive[s] : pillInactive}`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                    {(displayStatus === "SCHEDULED" || displayStatus === "PUBLISHED") && (
+                      <div className="space-y-1 max-w-md">
+                        <Label>
+                          {displayStatus === "SCHEDULED" ? "Scheduled For" : "Published On"}
+                        </Label>
+                        <Input
+                          type="datetime-local"
+                          value={toLocalInputValue(form.publishedAt)}
+                          onChange={(e) =>
+                            set(
+                              "publishedAt",
+                              e.target.value ? new Date(e.target.value).toISOString() : null,
+                            )
+                          }
+                        />
+                        {displayStatus === "SCHEDULED" && (
+                          <p className="text-[11px] text-amber-700">
+                            Hidden from the public site until this date/time.
+                          </p>
+                        )}
+                        {displayStatus === "PUBLISHED" && (
+                          <p className="text-[11px] text-black/50">
+                            Live now. Set a future date to schedule instead.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </CardContent>
           </Card>
         </TabsContent>
