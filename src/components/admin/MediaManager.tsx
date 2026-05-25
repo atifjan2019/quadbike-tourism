@@ -177,11 +177,7 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
               key={m.id}
               className="group relative bg-white border border-black/10 rounded overflow-hidden hover:shadow-md transition"
             >
-              <button
-                onClick={() => setEditing(m)}
-                className="block w-full relative aspect-square bg-black/5"
-                aria-label={`Edit ${m.filename}`}
-              >
+              <div className="relative aspect-square bg-black/5">
                 <Image
                   src={m.url}
                   alt={m.alt ?? m.filename}
@@ -190,27 +186,33 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
                   className="object-contain"
                   unoptimized
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <Pencil className="w-5 h-5 text-white" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
+                {/* Action toolbar — both icons grouped at top-right on hover */}
+                <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+                  <button
+                    type="button"
+                    onClick={() => setEditing(m)}
+                    title="Edit"
+                    aria-label={`Edit ${m.filename}`}
+                    className="w-7 h-7 inline-flex items-center justify-center rounded-md bg-white/95 hover:bg-white text-black shadow"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copyUrl(m.url, m.id)}
+                    title="Copy URL"
+                    aria-label="Copy URL"
+                    className="w-7 h-7 inline-flex items-center justify-center rounded-md bg-white/95 hover:bg-white text-black shadow"
+                  >
+                    {copiedId === m.id ? (
+                      <Check className="w-3.5 h-3.5 text-green-600" />
+                    ) : (
+                      <LinkIcon className="w-3.5 h-3.5" />
+                    )}
+                  </button>
                 </div>
-              </button>
-              {/* Copy URL overlay button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  copyUrl(m.url, m.id);
-                }}
-                title="Copy URL"
-                aria-label="Copy URL"
-                className="absolute top-1.5 right-1.5 w-7 h-7 inline-flex items-center justify-center rounded-md bg-white/90 hover:bg-white text-black shadow opacity-0 group-hover:opacity-100 transition"
-              >
-                {copiedId === m.id ? (
-                  <Check className="w-3.5 h-3.5 text-green-600" />
-                ) : (
-                  <LinkIcon className="w-3.5 h-3.5" />
-                )}
-              </button>
+              </div>
               <div className="p-1.5">
                 <div className="text-[10px] truncate font-mono text-black/70" title={m.filename}>
                   {m.filename}

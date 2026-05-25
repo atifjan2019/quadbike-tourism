@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Link from "next/link";
 
 type Category = {
@@ -49,11 +49,11 @@ const ROW_BOTTOM: Category[] = [
   },
 ];
 
-function Card({ c }: { c: Category }) {
+async function Card({ c }: { c: Category }) {
   return (
     <article className="bg-white border border-black/10 rounded-md p-6 flex flex-col items-center text-center transition-shadow hover:shadow-lg">
       <div className="relative w-[220px] h-[220px] lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden">
-        <Image
+        <SmartImage
           src={c.image}
           alt={c.label}
           fill
@@ -77,7 +77,7 @@ function Card({ c }: { c: Category }) {
   );
 }
 
-export default function CategoryGrid() {
+export default async function CategoryGrid() {
   return (
     <section className="py-20">
       <div className="container-site">

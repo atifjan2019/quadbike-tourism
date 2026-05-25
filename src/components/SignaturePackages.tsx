@@ -130,7 +130,7 @@ export default function SignaturePackages() {
 
                 {/* Image column — natural aspect, no crop */}
                 <div className="relative w-full rounded-2xl overflow-hidden shadow-xl bg-black/5">
-                  <Image
+                  <SmartImage
                     src={f.image}
                     alt={f.title}
                     width={f.imageWidth}
