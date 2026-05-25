@@ -7,6 +7,7 @@ import {
   Map,
   FolderTree,
   CalendarCheck,
+  Newspaper,
   Image as ImageIcon,
   Settings,
   LogOut,
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/admin/tours", label: "Tours", icon: Map },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
   { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck },
+  { href: "/admin/blogs", label: "Blogs", icon: Newspaper },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
@@ -29,8 +31,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  // Render bare layout on /admin/login (no shell)
-  if (pathname === "/admin/login") return <>{children}</>;
+  // Render bare layout on /admin/login (no shell). Handles both trailing-slash variants.
+  if (pathname === "/admin/login" || pathname === "/admin/login/") return <>{children}</>;
 
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });

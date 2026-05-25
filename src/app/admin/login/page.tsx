@@ -63,7 +63,7 @@ export default function LoginPage() {
                 setErr(null);
                 setPasscode(e.target.value);
               }}
-              className="block w-full h-11 px-3 rounded-md border-2 border-[#1e5fa8] bg-white text-black text-[15px] focus:outline-none focus:ring-2 focus:ring-[#1e5fa8]/40"
+              className="block w-full h-11 px-3 rounded-md border-2 border-black/20 bg-white text-black text-[15px] focus:outline-none focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/30"
             />
           </div>
 
@@ -74,7 +74,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={busy || !passcode}
-            className="w-full h-12 rounded-md bg-[#1e5fa8] hover:bg-[#1a548f] text-white font-bold text-[15px] transition disabled:opacity-50"
+            className="w-full h-12 rounded-md bg-brand-yellow hover:brightness-95 text-black font-extrabold uppercase tracking-[2px] text-[14px] transition disabled:opacity-50"
           >
             {busy ? "Unlocking…" : "Unlock bookings"}
           </button>
