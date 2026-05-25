@@ -34,23 +34,23 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/about" className="hover:text-brand-yellow">
+              <Link href="/about-us/" className="hover:text-brand-yellow">
                 About
               </Link>
             </li>
             <li>
-              <Link href="#booking" className="hover:text-brand-yellow">
+              <Link href="/#booking" className="hover:text-brand-yellow">
                 Booking
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:text-brand-yellow">
+              <Link href="/contact-us/" className="hover:text-brand-yellow">
                 Contact
               </Link>
             </li>
             <li>
-              <Link href="/blogs" className="hover:text-brand-yellow">
-                Blogs
+              <Link href="/blog/" className="hover:text-brand-yellow">
+                Blog
               </Link>
             </li>
           </ul>
@@ -63,17 +63,17 @@ export default function Footer() {
           <ul className="space-y-3 text-[15px]">
             <li>
               <Link href="/privacy-policy/" className="hover:text-brand-yellow">
-                Privacy Policy
+                Privacy
               </Link>
             </li>
             <li>
               <Link href="/refund-returns/" className="hover:text-brand-yellow">
-                Refund &amp; Returns Policy
+                Return
               </Link>
             </li>
             <li>
               <Link href="/terms-conditions/" className="hover:text-brand-yellow">
-                Terms &amp; Conditions
+                Terms
               </Link>
             </li>
           </ul>
@@ -111,8 +111,17 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="container-site py-5 text-center text-[13px] text-white/60">
-          © {new Date().getFullYear()} Quad Bike Tourism — Made with ❤ in the UAE
+        <div className="container-site py-5 text-center text-[13px] text-white/60 tracking-[2px] uppercase">
+          ©Copyright Quad Bike Tourism {new Date().getFullYear()} - Made with{" "}
+          <span className="text-red-500" aria-label="love">❤</span> in the UAE by{" "}
+          <a
+            href="http://webspires.com.pk/?utm_source=quadbike"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-brand-yellow"
+          >
+            Webspires
+          </a>
         </div>
       </div>
     </footer>
