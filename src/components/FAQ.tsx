@@ -1,88 +1,96 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 type QA = { q: string; a: string };
 
 const ITEMS: QA[] = [
   {
-    q: "Is quad biking safe for beginners?",
-    a: "Yes. Every ride begins with a 10-minute safety briefing, and we provide helmets, goggles, and protective gear. Our 90cc and 150cc bikes are perfectly suited for first-time riders, and a certified guide always rides at the front and back of the convoy.",
+    q: "DOES RIDING A QUAD BIKE REQUIRE ANY PRIOR EXPERIENCE?",
+    a: "You don't need any prior experience! Our expert guides give a safety briefing and instructions before the trip to ensure your comfort and safety.",
   },
   {
-    q: "What should I wear for a desert tour?",
-    a: "We recommend closed-toe shoes, comfortable clothes you don't mind getting dusty, and sunglasses. We provide helmets and goggles. In winter (Nov–Feb) bring a light jacket — desert evenings get cool.",
+    q: "IS IT SAFE TO QUAD BIKE?",
+    a: "Yes — every ride begins with a safety briefing and we provide helmets, goggles and protective gear. A certified guide rides with every convoy.",
   },
   {
-    q: "Do you offer free pickup and drop-off?",
-    a: "Yes, we include free hotel and residence pickup across Dubai, Sharjah, and Ajman. Pickup from Abu Dhabi or other emirates is available for an additional fee — just mention it at booking.",
+    q: "WHAT ATTIRE IS APPROPRIATE FOR QUAD BIKING?",
+    a: "We recommend closed-toe shoes, comfortable clothing you don't mind getting dusty, and sunglasses. Helmets and goggles are provided. In winter, bring a light jacket — desert evenings get cool.",
   },
   {
-    q: "What payment methods do you accept?",
-    a: "We accept all major credit cards (Visa, Mastercard, Amex), Apple Pay, Google Pay, and cash on arrival. A booking confirmation is sent instantly to your email.",
+    q: "ARE THERE ANY GROUP DISCOUNTS AVAILABLE?",
+    a: "Yes. Groups of 6+ receive 10% off automatically, and groups of 12+ get 15% off plus a complimentary refreshment package. Contact us for corporate or large-group rates.",
   },
   {
-    q: "Can I cancel or reschedule my booking?",
-    a: "Absolutely — every booking comes with free cancellation up to 24 hours before your tour. Rescheduling is free at any time, subject to availability.",
+    q: "WHICH PAYMENT METHODS ARE ACCEPTED?",
+    a: "We accept all major credit cards (Visa, Mastercard, Amex), Apple Pay, Google Pay, and cash on arrival. A booking confirmation is emailed instantly.",
   },
   {
-    q: "Are group discounts available?",
-    a: "Yes. Groups of 6 or more get an automatic 10% discount, and groups of 12+ receive 15% off plus a complimentary refreshment package. Contact us for corporate or large-group rates.",
+    q: "IS IT POSSIBLE TO PERSONALIZE MY TOUR?",
+    a: "Absolutely — our VIP package is fully bespoke. Choose your route, duration, vehicle, and add-ons like a private chef BBQ, falconry display, or sandboarding session.",
   },
   {
-    q: "Can I customize my tour itinerary?",
-    a: "Of course. Our VIP package is fully bespoke — pick your route, duration, vehicle, and add-ons like a private chef BBQ, falconry display, or sandboarding session.",
+    q: "WHEN IS THE IDEAL TIME OF DAY TO GO QUAD BIKING?",
+    a: "Sunrise and sunset rides offer the most comfortable temperatures and the best photography light. Midday rides are available in winter; we avoid them in peak summer.",
   },
   {
-    q: "What happens if the weather turns bad?",
-    a: "Safety always comes first. If high winds or sandstorms make the desert unsafe, we reschedule your tour at no cost or refund you in full — your choice.",
+    q: "WHAT OCCURS IN THE EVENT OF POOR WEATHER?",
+    a: "Safety first — if high winds or sandstorms make the desert unsafe, we reschedule your tour at no cost or refund you in full. Your choice.",
   },
   {
-    q: "Do I need a driving license for the quad bikes?",
-    a: "No driving license is required for our standard desert quad rides. Riders must be at least 16 years old for the 250cc+ bikes, and 8 years old (with an adult) for the 90cc bikes.",
+    q: "CAN I ENGAGE IN OTHER ACTIVITIES WHILE QUAD-BIKING?",
+    a: "Yes. Most of our packages bundle quad biking with sandboarding, camel rides, BBQ dinners, or cultural performances. Tell us what you'd like and we'll build a single combined itinerary.",
   },
 ];
 
 export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="py-24 bg-white">
-      <div className="container-site max-w-[920px]">
-        <h2 className="text-center text-[36px] sm:text-[48px] font-extrabold text-brand-dark leading-tight mb-12">
-          Frequently asked questions
+    <section className="py-24">
+      <div className="container-site max-w-[1100px]">
+        <h2 className="text-center font-display text-[40px] sm:text-[60px] lg:text-[76px] leading-[1.05] text-black mb-14">
+          FREQUENTLY ASKED QUESTIONS
         </h2>
-        <div className="divide-y divide-black/10 border-y border-black/10">
+
+        <div className="space-y-4">
           {ITEMS.map((item, idx) => {
             const isOpen = open === idx;
             return (
-              <div key={item.q}>
+              <div
+                key={item.q}
+                className={
+                  isOpen
+                    ? "bg-black text-white"
+                    : "bg-white text-black border border-black/20"
+                }
+              >
                 <button
                   type="button"
                   aria-expanded={isOpen}
                   onClick={() => setOpen(isOpen ? null : idx)}
-                  className="w-full flex items-center justify-between gap-6 py-6 text-left"
+                  className="w-full flex items-center justify-between gap-6 px-6 sm:px-8 py-5 text-left"
                 >
-                  <span className="text-[18px] sm:text-[20px] font-bold text-brand-dark">
+                  <span
+                    className={`text-[14px] sm:text-[15px] font-extrabold uppercase tracking-[1.5px] ${
+                      isOpen ? "text-white" : "text-black"
+                    }`}
+                  >
                     {item.q}
                   </span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-brand-dark shrink-0 transition-transform duration-200 ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  {isOpen ? (
+                    <X className="w-5 h-5 text-white shrink-0" strokeWidth={2.5} />
+                  ) : (
+                    <Plus className="w-5 h-5 text-black shrink-0" strokeWidth={2.5} />
+                  )}
                 </button>
-                <div
-                  className={`grid transition-[grid-template-rows] duration-200 ease-out ${
-                    isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <p className="pb-6 pr-8 text-[15px] sm:text-[16px] leading-[28px] text-brand-dark/85">
+                {isOpen && (
+                  <div className="bg-white text-black">
+                    <p className="px-6 sm:px-8 py-6 text-[17px] leading-[30px]">
                       {item.a}
                     </p>
                   </div>
-                </div>
+                )}
               </div>
             );
           })}

@@ -77,7 +77,7 @@ function Bullet({ children }: { children: React.ReactNode }) {
 
 export default function SignaturePackages() {
   return (
-    <section className="py-24 bg-brand-cream/40">
+    <section className="py-24">
       <div className="container-site">
         <div className="text-center mb-20">
           <p className="text-[14px] font-bold uppercase tracking-[3px] text-brand-dark/70 mb-3">

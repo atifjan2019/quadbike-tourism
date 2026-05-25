@@ -3,7 +3,7 @@
 @theme {
   --color-brand-yellow: #F7C83B;
   --color-brand-orange: #FF9F13;
-  --color-brand-dark: #3B3B3B;
+  --color-brand-dark: #000000;
   --color-brand-ink: #0A0A0A;
   --color-brand-cream: #FBF7EF;
 
@@ -17,8 +17,8 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: rgba(10, 10, 10, 0.85);
+  --background: rgba(227, 227, 227, 0.5);
+  --foreground: #000000;
 }
 
 html, body {

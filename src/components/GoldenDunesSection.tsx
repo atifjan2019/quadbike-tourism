@@ -3,7 +3,7 @@ import Button from "./ui/Button";
 
 export default function GoldenDunesSection() {
   return (
-    <section className="py-24 bg-brand-cream/40">
+    <section className="py-24">
       <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="relative w-full rounded-2xl overflow-hidden shadow-xl bg-black/5">
           <Image

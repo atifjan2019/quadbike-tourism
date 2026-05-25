@@ -79,7 +79,7 @@ function Card({ c }: { c: Category }) {
 
 export default function CategoryGrid() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20">
       <div className="container-site">
         {/* Top row: 3 cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
