@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   // Match the legacy WordPress URL shape (every page has a trailing slash)
   // so existing SEO equity / inbound links keep working.
   trailingSlash: true,
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "quadbiketourism.com", pathname: "/wp-content/uploads/**" },
+    ],
+  },
   async redirects() {
     return [
       { source: "/blogs", destination: "/blog", permanent: true },

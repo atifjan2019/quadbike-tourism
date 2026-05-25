@@ -16,11 +16,30 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function BlogPage() {
+const PAGE_SIZE = 20;
+
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page } = await searchParams;
+  const requested = Number.parseInt(page ?? "1", 10);
+  const currentPage = Number.isFinite(requested) && requested >= 1 ? requested : 1;
+
+  const where = { status: "PUBLISHED" as const };
+  const total = await prisma.blogPost.count({ where });
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+
   const posts = await prisma.blogPost.findMany({
-    where: { status: "PUBLISHED" },
+    where,
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+    skip: (safePage - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
   });
+
+  const pageHref = (n: number) => (n === 1 ? "/blog/" : `/blog/?page=${n}`);
 
   return (
     <>
@@ -81,6 +100,50 @@ export default async function BlogPage() {
                   </article>
                 ))}
               </div>
+            )}
+
+            {totalPages > 1 && (
+              <nav
+                aria-label="Blog pagination"
+                className="mt-12 flex flex-wrap items-center justify-center gap-2"
+              >
+                {safePage > 1 && (
+                  <Link
+                    href={pageHref(safePage - 1)}
+                    className="px-4 py-2 border border-black/15 rounded font-bold text-sm hover:bg-black hover:text-white transition"
+                  >
+                    ← Previous
+                  </Link>
+                )}
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => {
+                  const active = n === safePage;
+                  return (
+                    <Link
+                      key={n}
+                      href={pageHref(n)}
+                      aria-current={active ? "page" : undefined}
+                      className={
+                        "min-w-[40px] text-center px-3 py-2 border rounded font-bold text-sm transition " +
+                        (active
+                          ? "bg-black text-white border-black"
+                          : "border-black/15 hover:bg-black hover:text-white")
+                      }
+                    >
+                      {n}
+                    </Link>
+                  );
+                })}
+
+                {safePage < totalPages && (
+                  <Link
+                    href={pageHref(safePage + 1)}
+                    className="px-4 py-2 border border-black/15 rounded font-bold text-sm hover:bg-black hover:text-white transition"
+                  >
+                    Next →
+                  </Link>
+                )}
+              </nav>
             )}
           </div>
         </section>
