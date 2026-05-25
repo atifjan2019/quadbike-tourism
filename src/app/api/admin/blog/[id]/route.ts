@@ -13,6 +13,7 @@ const Body = z.object({
   publishedAt: z.string().datetime().optional().nullable(),
   seoTitle: z.string().optional().nullable(),
   seoDesc: z.string().optional().nullable(),
+  categoryId: z.string().optional().nullable(),
 });
 
 export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> }) {

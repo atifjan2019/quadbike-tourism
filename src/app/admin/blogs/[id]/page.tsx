@@ -8,7 +8,13 @@ export default async function EditBlogPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await props.params;
-  const post = await prisma.blogPost.findUnique({ where: { id } });
+  const [post, categories] = await Promise.all([
+    prisma.blogPost.findUnique({ where: { id } }),
+    prisma.blogCategory.findMany({
+      orderBy: [{ order: "asc" }, { name: "asc" }],
+      select: { id: true, name: true },
+    }),
+  ]);
   if (!post) notFound();
 
   return (
@@ -19,6 +25,7 @@ export default async function EditBlogPage(props: {
       </div>
       <BlogForm
         mode="edit"
+        categories={categories}
         initial={{
           id: post.id,
           title: post.title,
@@ -31,6 +38,7 @@ export default async function EditBlogPage(props: {
           publishedAt: post.publishedAt ? post.publishedAt.toISOString() : null,
           seoTitle: post.seoTitle ?? "",
           seoDesc: post.seoDesc ?? "",
+          categoryId: post.categoryId,
         }}
       />
     </div>

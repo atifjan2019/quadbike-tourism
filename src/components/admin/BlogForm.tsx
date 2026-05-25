@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/Label";
 import { Switch } from "@/components/ui/Switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { Card, CardContent } from "@/components/ui/Card";
-import RichEditor from "./RichEditor";
+import QuillEditor from "./QuillEditor";
 import { Trash2 } from "lucide-react";
 
 type Initial = {
@@ -24,6 +24,7 @@ type Initial = {
   publishedAt: string | null; // ISO
   seoTitle: string;
   seoDesc: string;
+  categoryId: string | null;
 };
 
 const blank: Initial = {
@@ -37,7 +38,10 @@ const blank: Initial = {
   publishedAt: null,
   seoTitle: "",
   seoDesc: "",
+  categoryId: null,
 };
+
+export type BlogCategoryOption = { id: string; name: string };
 
 function slugify(s: string) {
   return s
@@ -56,9 +60,11 @@ function toLocalInputValue(iso: string | null) {
 export default function BlogForm({
   initial,
   mode,
+  categories,
 }: {
   initial?: Initial;
   mode: "create" | "edit";
+  categories: BlogCategoryOption[];
 }) {
   const router = useRouter();
   const [form, setForm] = useState<Initial>(initial ?? blank);
@@ -176,6 +182,31 @@ export default function BlogForm({
                   />
                 </div>
               </div>
+              <div className="space-y-1">
+                <Label htmlFor="categoryId">Category</Label>
+                <select
+                  id="categoryId"
+                  value={form.categoryId ?? ""}
+                  onChange={(e) =>
+                    set("categoryId", e.target.value ? e.target.value : null)
+                  }
+                  className="h-10 w-full px-3 rounded-md border border-black/20 bg-white text-sm"
+                >
+                  <option value="">— None —</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-black/50">
+                  Manage categories from{" "}
+                  <a href="/admin/blog-categories/" className="underline">
+                    Blog Categories
+                  </a>
+                  .
+                </p>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                 <label className="flex items-center gap-2 text-sm">
                   <Switch
@@ -209,7 +240,7 @@ export default function BlogForm({
           <Card>
             <CardContent className="space-y-2">
               <Label>Body</Label>
-              <RichEditor
+              <QuillEditor
                 value={form.content}
                 onChange={(html) => set("content", html)}
               />

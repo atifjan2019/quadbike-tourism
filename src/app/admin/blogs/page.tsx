@@ -10,7 +10,10 @@ import { format } from "date-fns";
 export const dynamic = "force-dynamic";
 
 export default async function BlogsPage() {
-  const posts = await prisma.blogPost.findMany({ orderBy: { updatedAt: "desc" } });
+  const posts = await prisma.blogPost.findMany({
+    orderBy: { updatedAt: "desc" },
+    include: { category: { select: { name: true } } },
+  });
 
   return (
     <div className="space-y-6">
