@@ -12,7 +12,14 @@ export const dynamic = "force-dynamic";
 
 async function getPost(slug: string) {
   return prisma.blogPost.findFirst({
-    where: { slug, status: "PUBLISHED" },
+    where: {
+      slug,
+      status: "PUBLISHED",
+      OR: [
+        { publishedAt: null },
+        { publishedAt: { lte: new Date() } },
+      ],
+    },
   });
 }
 
@@ -50,9 +57,23 @@ export default async function BlogPostPage(props: {
   if (!post) notFound();
 
   const related = await prisma.blogPost.findMany({
-    where: { status: "PUBLISHED", NOT: { id: post.id } },
+    where: {
+      status: "PUBLISHED",
+      NOT: { id: post.id },
+      OR: [
+        { publishedAt: null },
+        { publishedAt: { lte: new Date() } },
+      ],
+    },
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
     take: 3,
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      featuredImage: true,
+      publishedAt: true,
+    },
   });
 
   const readMins = readingTimeMinutes(post.content);
@@ -71,7 +92,8 @@ export default async function BlogPostPage(props: {
                 fill
                 sizes="100vw"
                 className="object-cover opacity-60"
-                priority
+                loading="eager"
+                fetchPriority="high"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/70 to-brand-ink/20" />
             </div>

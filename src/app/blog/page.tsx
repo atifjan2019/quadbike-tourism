@@ -27,7 +27,13 @@ export default async function BlogPage({
   const requested = Number.parseInt(page ?? "1", 10);
   const currentPage = Number.isFinite(requested) && requested >= 1 ? requested : 1;
 
-  const where = { status: "PUBLISHED" as const };
+  const where = {
+    status: "PUBLISHED" as const,
+    OR: [
+      { publishedAt: null },
+      { publishedAt: { lte: new Date() } },
+    ],
+  };
   const total = await prisma.blogPost.count({ where });
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages);
