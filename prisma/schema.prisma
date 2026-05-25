@@ -136,16 +136,29 @@ model BlogPost {
   title         String
   slug          String   @unique
   excerpt       String?
-  content       String?  // Tiptap HTML
+  content       String?  // Quill HTML
   featuredImage String?
   author        String?
   status        Status   @default(DRAFT)
   publishedAt   DateTime?
   seoTitle      String?
   seoDesc       String?
+  categoryId    String?
+  category      BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@index([status])
   @@index([publishedAt])
+  @@index([categoryId])
+}
+
+model BlogCategory {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  order     Int        @default(0)
+  posts     BlogPost[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }

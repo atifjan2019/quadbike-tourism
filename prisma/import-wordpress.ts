@@ -51,6 +51,13 @@ function splitItems(xml: string): string[] {
   return items;
 }
 
+function firstCategory(block: string): { slug: string; name: string } | null {
+  const re = /<category\s+domain="category"\s+nicename="([^"]+)">\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*<\/category>/;
+  const m = block.match(re);
+  if (!m) return null;
+  return { slug: m[1], name: m[2] };
+}
+
 async function main() {
   const xml = fs.readFileSync(XML_PATH, "utf8");
   const items = splitItems(xml);
@@ -109,6 +116,18 @@ async function main() {
       if (isNaN(publishedAt.getTime())) publishedAt = null;
     }
 
+    // Resolve / create category from first <category> tag in the item
+    let categoryId: string | null = null;
+    const cat = firstCategory(item);
+    if (cat) {
+      const existingCat = await prisma.blogCategory.upsert({
+        where: { slug: cat.slug },
+        update: { name: cat.name },
+        create: { slug: cat.slug, name: cat.name },
+      });
+      categoryId = existingCat.id;
+    }
+
     const data = {
       title,
       slug,
@@ -120,6 +139,7 @@ async function main() {
       publishedAt,
       seoTitle,
       seoDesc,
+      categoryId,
     };
 
     const existing = await prisma.blogPost.findUnique({ where: { slug } });
