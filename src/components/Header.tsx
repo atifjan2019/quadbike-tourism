@@ -121,7 +121,7 @@ export default function Header() {
         {/* Right actions */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
           <Link
-            href="#booking"
+            href="/tours/"
             className="inline-flex items-center gap-2 bg-brand-dark text-white px-4 py-2 rounded-[5px] text-[14px] font-bold uppercase tracking-wide hover:bg-black"
           >
             <CalendarDays className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function Header() {
               </Link>
             ))}
             <Link
-              href="#booking"
+              href="/tours/"
               onClick={() => setMobileOpen(false)}
               className="mt-2 inline-flex items-center justify-center gap-2 bg-brand-dark text-white px-4 py-3 rounded-[5px] text-[14px] font-bold uppercase tracking-wide"
             >

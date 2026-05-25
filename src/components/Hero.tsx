@@ -2,7 +2,7 @@ import SmartImage from "@/components/SmartImage";
 
 export default function Hero() {
   return (
-    <section className="relative bg-brand-ink text-white overflow-hidden">
+    <section className="relative bg-black text-white overflow-hidden">
       <div className="container-site grid grid-cols-1 lg:grid-cols-2 items-center min-h-[640px] py-16 lg:py-0 gap-10">
         {/* Left copy */}
         <div className="relative lg:pl-2 z-10">
@@ -48,8 +48,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Subtle radial accent */}
-      <div className="pointer-events-none absolute -right-32 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-brand-orange/10 blur-3xl" />
     </section>
   );
 }
