@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { CalendarDays, Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 type NavItem = {
   label: string;
@@ -124,19 +124,26 @@ export default function Header() {
             href="/tours/"
             className="inline-flex items-center gap-2 bg-brand-dark text-white px-4 py-2 rounded-[5px] text-[14px] font-bold uppercase tracking-wide hover:bg-black"
           >
-            <CalendarDays className="w-4 h-4" />
             Book Now
           </Link>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-md text-brand-dark"
-          aria-label="Toggle menu"
-          onClick={() => setMobileOpen((v) => !v)}
-        >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Mobile actions */}
+        <div className="lg:hidden flex items-center gap-2">
+          <Link
+            href="/tours/"
+            className="inline-flex items-center bg-brand-dark text-white px-3 h-10 rounded-[5px] text-[12px] font-bold uppercase tracking-wide hover:bg-black"
+          >
+            Book Now
+          </Link>
+          <button
+            className="inline-flex items-center justify-center w-11 h-11 rounded-md text-brand-dark"
+            aria-label="Toggle menu"
+            onClick={() => setMobileOpen((v) => !v)}
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -160,9 +167,8 @@ export default function Header() {
             <Link
               href="/tours/"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 inline-flex items-center justify-center gap-2 bg-brand-dark text-white px-4 py-3 rounded-[5px] text-[14px] font-bold uppercase tracking-wide"
+              className="mt-2 inline-flex items-center justify-center bg-brand-dark text-white px-4 py-3 rounded-[5px] text-[14px] font-bold uppercase tracking-wide"
             >
-              <CalendarDays className="w-4 h-4" />
               Book Now
             </Link>
           </div>
