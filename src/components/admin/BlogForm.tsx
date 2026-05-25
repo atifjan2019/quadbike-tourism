@@ -43,6 +43,60 @@ const blank: Initial = {
 
 export type BlogCategoryOption = { id: string; name: string };
 
+function countWords(html: string): number {
+  if (!html) return 0;
+  const text = html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").trim();
+  if (!text) return 0;
+  return text.split(/\s+/).length;
+}
+
+function SeoMeter({
+  value,
+  min,
+  max,
+  unit,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  unit: "chars" | "words";
+}) {
+  let state: "low" | "ok" | "high" = "ok";
+  if (value < min) state = "low";
+  else if (value > max) state = "high";
+
+  const colorCls =
+    state === "ok"
+      ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+      : state === "low"
+        ? "text-amber-700 bg-amber-50 border-amber-200"
+        : "text-red-700 bg-red-50 border-red-200";
+
+  const label =
+    state === "ok"
+      ? "Optimal"
+      : state === "low"
+        ? unit === "chars"
+          ? "Too short"
+          : "Too few"
+        : unit === "chars"
+          ? "Too long"
+          : "Too many";
+
+  return (
+    <div className="flex items-center justify-between text-[11px] mt-1">
+      <span className="text-black/50">
+        Ideal: {min}–{max} {unit}
+      </span>
+      <span
+        className={`px-2 py-0.5 rounded border font-bold tracking-wide uppercase ${colorCls}`}
+      >
+        {value} {unit} · {label}
+      </span>
+    </div>
+  );
+}
+
 function slugify(s: string) {
   return s
     .toLowerCase()
@@ -239,10 +293,21 @@ export default function BlogForm({
         <TabsContent value="content">
           <Card>
             <CardContent className="space-y-2">
-              <Label>Body</Label>
+              <div className="flex items-center justify-between">
+                <Label>Body</Label>
+                <span className="text-[11px] text-black/60">
+                  <strong className="text-black">{countWords(form.content)}</strong> words
+                </span>
+              </div>
               <QuillEditor
                 value={form.content}
                 onChange={(html) => set("content", html)}
+              />
+              <SeoMeter
+                value={countWords(form.content)}
+                min={600}
+                max={2500}
+                unit="words"
               />
             </CardContent>
           </Card>
@@ -258,6 +323,12 @@ export default function BlogForm({
                   onChange={(e) => set("seoTitle", e.target.value)}
                   placeholder="Falls back to post title"
                 />
+                <SeoMeter
+                  value={(form.seoTitle || form.title).length}
+                  min={50}
+                  max={60}
+                  unit="chars"
+                />
               </div>
               <div className="space-y-1">
                 <Label>SEO Description</Label>
@@ -267,6 +338,30 @@ export default function BlogForm({
                   onChange={(e) => set("seoDesc", e.target.value)}
                   placeholder="Falls back to excerpt"
                 />
+                <SeoMeter
+                  value={(form.seoDesc || form.excerpt).length}
+                  min={120}
+                  max={160}
+                  unit="chars"
+                />
+              </div>
+              <div className="pt-4 border-t border-black/10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-[12px]">
+                <div className="bg-black/5 rounded px-3 py-2">
+                  <div className="text-black/50 uppercase tracking-wider text-[10px]">Body words</div>
+                  <div className="font-extrabold text-black mt-0.5">{countWords(form.content)}</div>
+                </div>
+                <div className="bg-black/5 rounded px-3 py-2">
+                  <div className="text-black/50 uppercase tracking-wider text-[10px]">Title chars</div>
+                  <div className="font-extrabold text-black mt-0.5">{(form.seoTitle || form.title).length}</div>
+                </div>
+                <div className="bg-black/5 rounded px-3 py-2">
+                  <div className="text-black/50 uppercase tracking-wider text-[10px]">Excerpt chars</div>
+                  <div className="font-extrabold text-black mt-0.5">{form.excerpt.length}</div>
+                </div>
+                <div className="bg-black/5 rounded px-3 py-2">
+                  <div className="text-black/50 uppercase tracking-wider text-[10px]">Desc chars</div>
+                  <div className="font-extrabold text-black mt-0.5">{(form.seoDesc || form.excerpt).length}</div>
+                </div>
               </div>
             </CardContent>
           </Card>
