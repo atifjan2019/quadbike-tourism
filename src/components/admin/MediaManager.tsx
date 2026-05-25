@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Label } from "@/components/ui/Label";
-import { Trash2, Upload, Copy, X, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
+import { Trash2, Upload, Copy, X, Pencil, ChevronLeft, ChevronRight, Link as LinkIcon, Check } from "lucide-react";
 
 type FileItem = {
   id: string;
@@ -163,7 +163,7 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
       {pageItems.length === 0 ? (
         <p className="text-sm text-black/60 py-10 text-center">No matching files.</p>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
           {pageItems.map((m) => (
             <div
               key={m.id}

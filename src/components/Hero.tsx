@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 
 export default function Hero() {
   return (
@@ -21,8 +21,8 @@ export default function Hero() {
             <p className="text-white text-[22px] sm:text-[28px] lg:text-[34px] font-extrabold leading-snug">
               Premium Private Desert Tours
             </p>
-            {/* Hand-drawn yellow arrow accent — floats to the right of the headline */}
-            <Image
+            {/* Hand-drawn yellow arrow accent */}
+            <SmartImage
               src="/images/yellow-arrow.png"
               alt=""
               width={180}
@@ -37,7 +37,7 @@ export default function Hero() {
 
         {/* Right hero image */}
         <div className="relative w-full h-[360px] sm:h-[460px] lg:h-[640px]">
-          <Image
+          <SmartImage
             src="/images/buggy-hero.webp"
             alt="Premium desert buggy ready for adventure"
             fill
