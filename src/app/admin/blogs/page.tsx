@@ -36,6 +36,7 @@ export default async function BlogsPage() {
             <THead>
               <TR>
                 <TH>Title</TH>
+                <TH>Category</TH>
                 <TH>Author</TH>
                 <TH>Status</TH>
                 <TH>Published</TH>
@@ -46,7 +47,7 @@ export default async function BlogsPage() {
             <TBody>
               {posts.length === 0 ? (
                 <TR>
-                  <TD className="py-10 text-center text-black/50" colSpan={6}>
+                  <TD className="py-10 text-center text-black/50" colSpan={7}>
                     No blog posts yet. Create your first one.
                   </TD>
                 </TR>
@@ -59,6 +60,7 @@ export default async function BlogsPage() {
                       </Link>
                       <div className="text-xs text-black/50">/blog/{p.slug}/</div>
                     </TD>
+                    <TD className="text-sm">{p.category?.name ?? "—"}</TD>
                     <TD>{p.author ?? "—"}</TD>
                     <TD>
                       <Badge variant={p.status === "PUBLISHED" ? "success" : "muted"}>
