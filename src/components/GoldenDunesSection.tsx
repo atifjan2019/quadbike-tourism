@@ -1,12 +1,12 @@
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 import Button from "./ui/Button";
 
-export default function GoldenDunesSection() {
+export default async function GoldenDunesSection() {
   return (
     <section className="py-24">
       <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="relative w-full rounded-2xl overflow-hidden shadow-xl bg-black/5">
-          <Image
+          <SmartImage
             src="/images/fire-show.jpg"
             alt="Traditional fire show under the desert stars"
             width={1000}

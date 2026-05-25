@@ -36,6 +36,14 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<FileItem | null>(null);
   const [origin, setOrigin] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  async function copyUrl(url: string, id: string) {
+    const full = origin ? `${origin}${url}` : url;
+    await navigator.clipboard.writeText(full);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 1200);
+  }
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -172,6 +180,7 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
               <button
                 onClick={() => setEditing(m)}
                 className="block w-full relative aspect-square bg-black/5"
+                aria-label={`Edit ${m.filename}`}
               >
                 <Image
                   src={m.url}
@@ -184,6 +193,23 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
                   <Pencil className="w-5 h-5 text-white" />
                 </div>
+              </button>
+              {/* Copy URL overlay button */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  copyUrl(m.url, m.id);
+                }}
+                title="Copy URL"
+                aria-label="Copy URL"
+                className="absolute top-1.5 right-1.5 w-7 h-7 inline-flex items-center justify-center rounded-md bg-white/90 hover:bg-white text-black shadow opacity-0 group-hover:opacity-100 transition"
+              >
+                {copiedId === m.id ? (
+                  <Check className="w-3.5 h-3.5 text-green-600" />
+                ) : (
+                  <LinkIcon className="w-3.5 h-3.5" />
+                )}
               </button>
               <div className="p-1.5">
                 <div className="text-[10px] truncate font-mono text-black/70" title={m.filename}>
