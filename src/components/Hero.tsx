@@ -3,57 +3,42 @@ import Image from "next/image";
 export default function Hero() {
   return (
     <section className="relative bg-brand-ink text-white overflow-hidden">
-      <div className="container-site grid grid-cols-1 lg:grid-cols-2 items-center min-h-[720px] py-16 lg:py-0 gap-10">
+      <div className="container-site grid grid-cols-1 lg:grid-cols-2 items-center min-h-[640px] py-16 lg:py-0 gap-10">
         {/* Left copy */}
-        <div className="relative lg:pl-6 z-10">
-          <p
-            className="text-brand-yellow text-[32px] sm:text-[40px] leading-none mb-2"
-            style={{ fontFamily: "var(--font-script)" }}
-          >
-            Welcome to
+        <div className="relative lg:pl-2 z-10">
+          <p className="font-display text-white text-[32px] sm:text-[40px] lg:text-[44px] leading-none tracking-[1px] mb-3">
+            WELCOME TO
           </p>
-          <h1 className="font-display text-brand-yellow text-[44px] sm:text-[56px] lg:text-[66px] leading-[1.05] mb-8">
+          <h1 className="font-display text-brand-yellow text-[52px] sm:text-[68px] lg:text-[84px] leading-[1] tracking-[1px] mb-7">
             QUAD BIKE
             <br />
             TOURISM
           </h1>
-          <p className="text-white text-[24px] sm:text-[30px] lg:text-[36px] font-normal leading-snug mb-3">
-            Trusted Guaranteed, Free Cancellation
+          <p className="text-white text-[22px] sm:text-[28px] lg:text-[32px] font-normal leading-snug mb-2">
+            Trusted Guranteed, Free Cancellation
           </p>
-          <p className="text-white text-[24px] sm:text-[30px] lg:text-[36px] font-extrabold leading-snug">
-            Premium Private Desert Tours
-          </p>
-
-          {/* Hand-drawn arrow */}
-          <svg
-            className="hero-arrow mt-8"
-            viewBox="0 0 220 80"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden
-          >
-            <path
-              d="M5 40 C 60 5, 130 5, 195 35"
-              stroke="currentColor"
-              strokeWidth="4"
-              strokeLinecap="round"
-              fill="none"
+          <div className="relative inline-block">
+            <p className="text-white text-[22px] sm:text-[28px] lg:text-[34px] font-extrabold leading-snug">
+              Premium Private Desert Tours
+            </p>
+            {/* Hand-drawn yellow arrow accent — floats to the right of the headline */}
+            <Image
+              src="/images/yellow-arrow.png"
+              alt=""
+              width={180}
+              height={120}
+              sizes="180px"
+              className="absolute -right-[120px] -bottom-[80px] select-none pointer-events-none hidden sm:block"
+              style={{ width: "160px", height: "auto" }}
+              priority
             />
-            <path
-              d="M180 18 L 200 35 L 178 50"
-              stroke="currentColor"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            />
-          </svg>
+          </div>
         </div>
 
         {/* Right hero image */}
         <div className="relative w-full h-[360px] sm:h-[460px] lg:h-[640px]">
           <Image
-            src="/images/hero-buggy.svg"
+            src="/images/buggy-hero.webp"
             alt="Premium desert buggy ready for adventure"
             fill
             priority

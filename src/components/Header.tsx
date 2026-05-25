@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import { CalendarDays, User, Menu, X, ChevronDown } from "lucide-react";
+import { CalendarDays, Menu, X, ChevronDown } from "lucide-react";
 
 type NavItem = {
   label: string;
@@ -61,7 +62,6 @@ const NAV: NavItem[] = [
       { label: "VIP Private Safari", href: "/desert-safari/vip" },
     ],
   },
-  { label: "Blogs", href: "/blogs" },
 ];
 
 export default function Header() {
@@ -71,23 +71,17 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-white border-b border-black/5 shadow-[0_2px_18px_rgba(0,0,0,0.04)]">
       <div className="container-site flex items-center justify-between gap-4 h-[96px]">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-2">
-            <span
-              className="font-display text-2xl leading-none text-brand-yellow"
-              aria-hidden
-            >
-              QB
-            </span>
-            <div className="leading-tight">
-              <div className="font-extrabold text-brand-dark text-[17px] tracking-wide">
-                QUAD BIKE
-              </div>
-              <div className="font-extrabold text-brand-yellow text-[17px] tracking-wide -mt-1">
-                TOURISM
-              </div>
-            </div>
-          </div>
+        <Link href="/" className="flex items-center shrink-0" aria-label="Quad Bike Tourism — Home">
+          <Image
+            src="/images/buggy-desert-1.png"
+            alt="Quad Bike Tourism"
+            width={200}
+            height={90}
+            sizes="200px"
+            priority
+            className="h-[80px] w-auto object-contain"
+            style={{ width: "auto", height: "80px" }}
+          />
         </Link>
 
         {/* Desktop nav */}
@@ -98,7 +92,7 @@ export default function Header() {
                 href={item.href}
                 className={`inline-flex items-center gap-1 px-[18px] py-[10px] rounded-[5px] text-[16px] font-bold uppercase tracking-wide transition-colors ${
                   item.active
-                    ? "bg-brand-yellow text-white"
+                    ? "bg-brand-yellow text-brand-dark"
                     : "text-brand-dark hover:text-brand-yellow"
                 }`}
               >
@@ -126,13 +120,6 @@ export default function Header() {
 
         {/* Right actions */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
-          <Link
-            href="/account"
-            className="w-10 h-10 inline-flex items-center justify-center rounded-full text-brand-dark hover:bg-brand-cream"
-            aria-label="Account"
-          >
-            <User className="w-5 h-5" />
-          </Link>
           <Link
             href="#booking"
             className="inline-flex items-center gap-2 bg-brand-dark text-white px-4 py-2 rounded-[5px] text-[14px] font-bold uppercase tracking-wide hover:bg-black"
@@ -163,7 +150,7 @@ export default function Header() {
                 onClick={() => setMobileOpen(false)}
                 className={`px-4 py-3 rounded-[5px] text-[15px] font-bold uppercase tracking-wide ${
                   item.active
-                    ? "bg-brand-yellow text-white"
+                    ? "bg-brand-yellow text-brand-dark"
                     : "text-brand-dark hover:bg-brand-cream"
                 }`}
               >

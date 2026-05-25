@@ -13,7 +13,7 @@
 
   --radius-btn: 5px;
 
-  --container-site: 1200px;
+  --container-site: 1400px;
 }
 
 :root {
@@ -42,10 +42,10 @@ html, body {
   align-items: center;
   justify-content: center;
   background: var(--color-brand-yellow);
-  color: #ffffff;
+  color: var(--color-brand-dark);
   font-family: var(--font-sans);
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 2px;
   padding: 18px 28px;
   border-radius: var(--radius-btn);
