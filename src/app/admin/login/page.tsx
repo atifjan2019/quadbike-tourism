@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Delete } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,17 +11,8 @@ export default function LoginPage() {
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const press = (d: string) => {
-    if (passcode.length >= 12) return;
-    setErr(null);
-    setPasscode((p) => p + d);
-  };
-  const back = () => {
-    setErr(null);
-    setPasscode((p) => p.slice(0, -1));
-  };
-
-  async function submit() {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (!passcode) return;
     setBusy(true);
     setErr(null);
@@ -47,62 +37,48 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-ink p-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8">
-        <div className="text-center mb-6">
-          <p className="font-display text-2xl text-brand-yellow leading-none">QB</p>
-          <h1 className="mt-3 text-2xl font-extrabold text-black">Admin Access</h1>
-          <p className="mt-1 text-sm text-black/60">Enter the 6-digit passcode</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="w-full max-w-md rounded-lg border border-black/10 bg-white shadow-sm p-8">
+        <h1 className="text-2xl font-extrabold text-black">Admin passcode</h1>
+        <p className="mt-1 text-sm text-black/60">
+          Enter the passcode to view saved bookings.
+        </p>
 
-        {/* Dots */}
-        <div className="flex justify-center gap-3 mb-6 h-6">
-          {Array.from({ length: Math.max(6, passcode.length) }).map((_, i) => (
-            <span
-              key={i}
-              className={`w-3 h-3 rounded-full ${
-                i < passcode.length ? "bg-black" : "bg-black/15"
-              }`}
-            />
-          ))}
-        </div>
-
-        {err && (
-          <p className="text-center text-red-600 text-sm font-semibold mb-3">{err}</p>
-        )}
-
-        {/* Keypad */}
-        <div className="grid grid-cols-3 gap-3">
-          {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((d) => (
-            <button
-              key={d}
-              onClick={() => press(d)}
-              className="h-14 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-black text-xl font-bold transition"
+        <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          <div className="space-y-1.5">
+            <label
+              htmlFor="passcode"
+              className="block text-sm font-bold text-black"
             >
-              {d}
-            </button>
-          ))}
+              Passcode
+            </label>
+            <input
+              id="passcode"
+              type="password"
+              inputMode="numeric"
+              autoComplete="current-password"
+              autoFocus
+              value={passcode}
+              onChange={(e) => {
+                setErr(null);
+                setPasscode(e.target.value);
+              }}
+              className="block w-full h-11 px-3 rounded-md border-2 border-[#1e5fa8] bg-white text-black text-[15px] focus:outline-none focus:ring-2 focus:ring-[#1e5fa8]/40"
+            />
+          </div>
+
+          {err && (
+            <p className="text-sm text-red-600 font-semibold">{err}</p>
+          )}
+
           <button
-            onClick={back}
-            aria-label="Backspace"
-            className="h-14 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-black inline-flex items-center justify-center"
-          >
-            <Delete className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => press("0")}
-            className="h-14 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-black text-xl font-bold"
-          >
-            0
-          </button>
-          <button
-            onClick={submit}
+            type="submit"
             disabled={busy || !passcode}
-            className="h-14 rounded-xl bg-brand-yellow text-black font-extrabold uppercase tracking-wider hover:brightness-95 disabled:opacity-50"
+            className="w-full h-12 rounded-md bg-[#1e5fa8] hover:bg-[#1a548f] text-white font-bold text-[15px] transition disabled:opacity-50"
           >
-            {busy ? "…" : "Enter"}
+            {busy ? "Unlocking…" : "Unlock bookings"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

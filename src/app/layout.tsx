@@ -28,7 +28,11 @@ const brillante = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Quad Bike Tourism — Premium Private Desert Tours in the UAE",
+  metadataBase: new URL("https://quadbiketourism.com"),
+  title: {
+    default: "Desert Dune Buggy – Desert Quad Biking",
+    template: "%s | Quad Bike Tourism",
+  },
   description:
     "Book premium private desert tours, quad biking, dune buggies, and water sports across the UAE. Free cancellation and free pickup & drop-off.",
   other: {
