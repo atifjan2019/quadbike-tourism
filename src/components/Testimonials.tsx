@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SmartImage from "@/components/SmartImage";
 
 type Testimonial = {
   title: string;
@@ -60,7 +60,7 @@ function DotGrid() {
   );
 }
 
-export default function Testimonials() {
+export default async function Testimonials() {
   return (
     <section className="bg-brand-yellow py-24">
       <div className="container-site">
@@ -94,7 +94,7 @@ export default function Testimonials() {
               <div className="mt-8 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden bg-brand-dark/10 shrink-0">
-                    <Image
+                    <SmartImage
                       src={t.avatar}
                       alt={t.name}
                       fill
