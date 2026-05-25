@@ -1,6 +1,18 @@
 import { PrismaClient, Status } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import path from "node:path";
+import dotenv from "dotenv";
 
-const prisma = new PrismaClient();
+// Load env from .env.local (Next.js convention) then .env
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+dotenv.config();
+
+const connectionString = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("Seed needs DIRECT_URL or DATABASE_URL in .env.local");
+}
+const adapter = new PrismaPg({ connectionString });
+const prisma = new PrismaClient({ adapter });
 
 const CATEGORIES = [
   { slug: "quad-bikes", name: "Quad Bikes", order: 1, image: "/images/250000-scaled.webp" },

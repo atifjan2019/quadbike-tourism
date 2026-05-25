@@ -1,7 +1,10 @@
-import "dotenv/config";
 import path from "node:path";
+import dotenv from "dotenv";
 import { defineConfig } from "@prisma/config";
-import { PrismaPg } from "@prisma/adapter-pg";
+
+// Load .env.local first (Next.js convention), then fall back to .env
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+dotenv.config();
 
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
@@ -9,10 +12,9 @@ export default defineConfig({
     path: path.join("prisma", "migrations"),
     seed: "tsx prisma/seed.ts",
   },
-  experimental: {
-    adapter: true,
-  },
-  async adapter() {
-    return new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  datasource: {
+    // CLI commands (db push, migrate) need a session-mode connection (DDL won't run
+    // through PgBouncer transaction mode). DIRECT_URL is the session-mode pooler URL.
+    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL,
   },
 });
