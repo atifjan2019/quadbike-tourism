@@ -48,10 +48,26 @@ export async function generateMetadata(props: {
   const { category } = await props.params;
   const cat = await prisma.category.findUnique({ where: { slug: category } });
   if (!cat) return { title: "Not found" };
+  const description = `Browse all ${cat.name.toLowerCase()} tours in the UAE — private bookings, free pickup & drop-off, instant confirmation.`;
+  const canonical = `/${cat.slug}/`;
+  const ogImage = cat.image || "/images/buggy-hero.webp";
   return {
-    title: `${cat.name} | Quad Bike Tourism`,
-    description: `Browse all ${cat.name.toLowerCase()} tours in the UAE — private bookings, free pickup & drop-off, instant confirmation.`,
-    alternates: { canonical: `/${cat.slug}/` },
+    title: cat.name,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      type: "website",
+      url: canonical,
+      title: `${cat.name} | Quad Bike Tourism`,
+      description,
+      images: [{ url: ogImage, alt: cat.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${cat.name} | Quad Bike Tourism`,
+      description,
+      images: [ogImage],
+    },
   };
 }
 

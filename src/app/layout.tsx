@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Rubik } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
+
+const SITE_URL = "https://quadbiketourism.com";
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -27,17 +29,66 @@ const brillante = localFont({
   style: "normal",
 });
 
+const DEFAULT_TITLE =
+  "Desert Quad Biking in Dubai – Book Your Adventure Today!";
+const DEFAULT_DESCRIPTION =
+  "Book premium private desert tours, quad biking, dune buggies, and water sports across the UAE. Free cancellation and free pickup & drop-off.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://quadbiketourism.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Desert Quad Biking in Dubai – Book Your Adventure Today!",
+    default: DEFAULT_TITLE,
     template: "%s | Quad Bike Tourism",
   },
-  description:
-    "Book premium private desert tours, quad biking, dune buggies, and water sports across the UAE. Free cancellation and free pickup & drop-off.",
+  description: DEFAULT_DESCRIPTION,
+  applicationName: "Quad Bike Tourism",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Quad Bike Tourism",
+    url: SITE_URL,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [
+      {
+        url: "/images/buggy-hero.webp",
+        width: 1200,
+        height: 630,
+        alt: "Premium desert buggy ready for adventure",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: ["/images/buggy-hero.webp"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   other: {
     "p:domain_verify": "a9dfa325441e121ea3ad5bae7ca86e45",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#F7C83B",
 };
 
 export default function RootLayout({
@@ -54,6 +105,34 @@ export default function RootLayout({
         className="min-h-full flex flex-col text-black"
         style={{ background: "rgba(227, 227, 227, 0.5)" }}
       >
+        <Script
+          id="ld-organization"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "TravelAgency",
+              "@id": `${SITE_URL}/#organization`,
+              name: "Quad Bike Tourism",
+              url: SITE_URL,
+              logo: `${SITE_URL}/images/buggy-desert-1.png`,
+              image: `${SITE_URL}/images/buggy-hero.webp`,
+              description: DEFAULT_DESCRIPTION,
+              areaServed: { "@type": "Country", name: "United Arab Emirates" },
+              address: {
+                "@type": "PostalAddress",
+                addressCountry: "AE",
+              },
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                email: "info@quadbiketourism.com",
+                availableLanguage: ["English", "Arabic"],
+              },
+            }),
+          }}
+        />
         {children}
 
         {/* Google Ads gtag.js */}

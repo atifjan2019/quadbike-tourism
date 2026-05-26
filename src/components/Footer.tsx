@@ -4,7 +4,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="bg-brand-ink text-white/80 mt-auto">
-      <div className="container-site py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="container-site py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
         <div>
           <Link href="/" className="inline-flex items-center gap-2">
             <span className="font-display text-2xl text-brand-yellow leading-none">
@@ -51,6 +51,39 @@ export default function Footer() {
             <li>
               <Link href="/blog/" className="hover:text-brand-yellow">
                 Blog
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-brand-yellow text-[14px] font-bold uppercase tracking-[2px] mb-5">
+            Tours
+          </h4>
+          <ul className="space-y-3 text-[15px]">
+            <li>
+              <Link href="/quad-bikes/" className="hover:text-brand-yellow">
+                Quad Bikes
+              </Link>
+            </li>
+            <li>
+              <Link href="/buggy-tours/" className="hover:text-brand-yellow">
+                Buggy Tours
+              </Link>
+            </li>
+            <li>
+              <Link href="/desert-safari/" className="hover:text-brand-yellow">
+                Desert Safari
+              </Link>
+            </li>
+            <li>
+              <Link href="/city-tours/" className="hover:text-brand-yellow">
+                City Tours
+              </Link>
+            </li>
+            <li>
+              <Link href="/water-sports/" className="hover:text-brand-yellow">
+                Water Sports
               </Link>
             </li>
           </ul>
