@@ -241,7 +241,7 @@ export default function BookingPanel({
           onClick={() => setModalOpen(false)}
         >
           <div
-            className="bg-white rounded-lg w-full max-w-[560px] max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="bg-white rounded-lg w-full max-w-[min(560px,calc(100vw-2rem))] max-h-[90vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-black/10 sticky top-0 bg-white z-10">

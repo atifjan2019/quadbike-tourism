@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 
 export type MobileNavItem = {
@@ -15,19 +15,35 @@ export default function MobileNav({ items }: { items: MobileNavItem[] }) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!open) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [open]);
+
   return (
     <>
       <button
         className="inline-flex items-center justify-center w-11 h-11 rounded-md text-brand-dark"
         aria-label="Toggle menu"
+        aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
         {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
       {open && (
-        <div className="lg:hidden absolute left-0 right-0 top-full border-t border-black/5 bg-white">
-          <div className="container-site py-4 flex flex-col gap-1">
+        <>
+          <div
+            className="lg:hidden fixed inset-0 top-[96px] bg-black/30 z-30"
+            aria-hidden="true"
+            onClick={() => setOpen(false)}
+          />
+          <div className="lg:hidden absolute left-0 right-0 top-full border-t border-black/5 bg-white z-40 max-h-[calc(100vh-96px)] overflow-y-auto">
+            <div className="container-site py-4 flex flex-col gap-1">
             {items.map((item) => (
               <div key={item.label}>
                 <div className="flex items-stretch gap-1">
@@ -82,8 +98,9 @@ export default function MobileNav({ items }: { items: MobileNavItem[] }) {
             >
               Book Now
             </Link>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

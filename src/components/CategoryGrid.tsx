@@ -52,12 +52,12 @@ const ROW_BOTTOM: Category[] = [
 async function Card({ c }: { c: Category }) {
   return (
     <article className="bg-white border border-black/10 rounded-md p-6 flex flex-col items-center text-center transition-shadow hover:shadow-lg">
-      <div className="relative w-[220px] h-[220px] lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden">
+      <div className="relative w-[170px] h-[170px] sm:w-[220px] sm:h-[220px] lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden">
         <SmartImage
           src={c.image}
           alt={c.label}
           fill
-          sizes="240px"
+          sizes="(max-width: 640px) 170px, 240px"
           className={c.fit === "contain" ? "object-contain" : "object-cover"}
         />
       </div>
@@ -82,13 +82,13 @@ export default async function CategoryGrid() {
     <section className="py-20">
       <div className="container-site">
         {/* Top row: 3 cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {ROW_TOP.map((c) => (
             <Card key={c.label} c={c} />
           ))}
         </div>
         {/* Bottom row: 2 cards aligned with the outer columns of the 3-col grid */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           <Card c={ROW_BOTTOM[0]} />
           <div className="hidden md:block" />
           <Card c={ROW_BOTTOM[1]} />
