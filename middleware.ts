@@ -20,8 +20,13 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const secret = process.env.AUTH_SECRET ?? "";
 
+  // Normalize trailing slash for comparisons (next.config has trailingSlash: true)
+  const normalized = pathname.length > 1 && pathname.endsWith("/")
+    ? pathname.slice(0, -1)
+    : pathname;
+
   // Skip login page and login API itself
-  if (pathname === "/admin/login" || pathname === "/api/auth/login") {
+  if (normalized === "/admin/login" || normalized === "/api/auth/login") {
     return NextResponse.next();
   }
 
@@ -29,10 +34,10 @@ export async function middleware(req: NextRequest) {
   const ok = await verify(cookie, secret);
 
   if (!ok) {
-    if (pathname.startsWith("/api/admin")) {
+    if (normalized.startsWith("/api/admin")) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
-    if (pathname.startsWith("/admin")) {
+    if (normalized.startsWith("/admin")) {
       const url = req.nextUrl.clone();
       url.pathname = "/admin/login";
       url.searchParams.set("from", pathname);
