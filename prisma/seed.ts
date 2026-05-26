@@ -1,4 +1,4 @@
-import { PrismaClient, Status } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import path from "node:path";
 import dotenv from "dotenv";
@@ -20,24 +20,6 @@ const CATEGORIES = [
   { slug: "city-tours", name: "City Tours", order: 3, image: "/images/City-Tours.webp" },
   { slug: "water-sports", name: "Water Sports", order: 4, image: "/images/Water-Sports.webp" },
   { slug: "desert-safari", name: "Desert Safari", order: 5, image: "/images/desert-safari.webp" },
-];
-
-const TOURS = [
-  // Quad bikes
-  { slug: "quad-90cc-30min", title: "90CC Quad — 30 Minutes", cat: "quad-bikes", price: 150, dur: 30 },
-  { slug: "quad-250cc-1hr", title: "250CC Quad — 1 Hour", cat: "quad-bikes", price: 300, dur: 60 },
-  { slug: "quad-450cc-2hr", title: "450CC Quad — 2 Hours", cat: "quad-bikes", price: 550, dur: 120 },
-  // Buggies
-  { slug: "polaris-rzr-1000-1hr", title: "Polaris RZR 1000 — 1 Hour", cat: "buggy-tours", price: 800, dur: 60 },
-  { slug: "can-am-x3-2hr", title: "Can-Am Maverick X3 — 2 Hours", cat: "buggy-tours", price: 1400, dur: 120 },
-  // City
-  { slug: "dubai-city-tour", title: "Dubai City Half-Day Tour", cat: "city-tours", price: 250, dur: 240 },
-  { slug: "burj-khalifa-tour", title: "Burj Khalifa Entry + City Tour", cat: "city-tours", price: 450, dur: 300 },
-  // Water
-  { slug: "jet-ski-30min", title: "Jet Ski — 30 Minutes", cat: "water-sports", price: 250, dur: 30 },
-  { slug: "flyboard-15min", title: "Flyboard — 15 Minutes", cat: "water-sports", price: 350, dur: 15 },
-  // Safari
-  { slug: "evening-desert-safari", title: "Evening Desert Safari + BBQ", cat: "desert-safari", price: 200, dur: 360 },
 ];
 
 const TESTIMONIALS = [
@@ -62,31 +44,6 @@ async function main() {
       where: { slug: c.slug },
       update: c,
       create: c,
-    });
-  }
-
-  const catBySlug = Object.fromEntries(
-    (await prisma.category.findMany()).map((c) => [c.slug, c.id])
-  );
-
-  console.log("Seeding tours…");
-  for (const t of TOURS) {
-    await prisma.tour.upsert({
-      where: { slug: t.slug },
-      update: {},
-      create: {
-        slug: t.slug,
-        title: t.title,
-        shortDesc: `Book ${t.title.toLowerCase()} with free pickup, free cancellation, and instant confirmation.`,
-        description: `<p>${t.title} — fully guided, all safety gear included. Suitable for ages 12+. Free hotel pickup and drop-off across Dubai.</p>`,
-        priceFrom: t.price,
-        durationMin: t.dur,
-        maxGuests: 6,
-        includes: ["Free Cancellation", "Free Pickup & Drop-off", "Instant Booking", "Safety Briefing"],
-        categoryId: catBySlug[t.cat],
-        status: Status.PUBLISHED,
-        featured: ["quad-90cc-30min", "polaris-rzr-1000-1hr", "evening-desert-safari"].includes(t.slug),
-      },
     });
   }
 

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Table, THead, TBody, TR, TH, TD } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
 import { formatMoney } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Plus, Pencil, Eye } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -66,12 +66,26 @@ export default async function ToursPage() {
                       </Badge>
                     </TD>
                     <TD className="text-right">
-                      <Link
-                        href={`/admin/tours/${t.id}`}
-                        className="text-sm font-bold hover:underline"
-                      >
-                        Edit
-                      </Link>
+                      <div className="inline-flex items-center gap-1">
+                        <Link
+                          href={`/tours/#${t.category.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Preview ${t.title}`}
+                          title="Preview"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-md text-black/70 hover:text-brand-dark hover:bg-black/5"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                        <Link
+                          href={`/admin/tours/${t.id}`}
+                          aria-label={`Edit ${t.title}`}
+                          title="Edit"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-md text-black/70 hover:text-brand-dark hover:bg-black/5"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Link>
+                      </div>
                     </TD>
                   </TR>
                 ))
