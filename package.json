@@ -12,6 +12,7 @@
     "db:import:woo": "tsx prisma/import-woocommerce.ts",
     "db:import:variations": "tsx prisma/import-variations.ts",
     "db:import:media": "tsx prisma/import-media.ts",
+    "db:rewrite:images": "tsx prisma/rewrite-image-urls.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },
