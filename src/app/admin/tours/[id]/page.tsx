@@ -47,6 +47,7 @@ export default async function EditTourPage(props: {
             label: v.label,
             price: Number(v.price),
             durationMin: v.durationMin ?? null,
+            maxGuests: v.maxGuests ?? null,
           })),
         }}
       />

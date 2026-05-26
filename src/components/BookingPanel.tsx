@@ -8,6 +8,7 @@ export type BookingVariation = {
   label: string;
   price: number;
   durationMin: number | null;
+  maxGuests: number | null;
 };
 
 type Status = "idle" | "submitting" | "success" | "error";

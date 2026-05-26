@@ -93,6 +93,7 @@ export default async function TourDetailPage(props: {
         label: v.label,
         price: Number(v.price),
         durationMin: v.durationMin ?? null,
+        maxGuests: v.maxGuests ?? null,
       }))
     : [];
 

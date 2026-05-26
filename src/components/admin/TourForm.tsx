@@ -293,7 +293,7 @@ export default function TourForm({
                         key={v.id ?? `new-${i}`}
                         className="grid grid-cols-12 gap-2 items-start bg-zinc-50 border border-black/10 rounded px-3 py-3"
                       >
-                        <div className="col-span-12 sm:col-span-5 space-y-1">
+                        <div className="col-span-12 sm:col-span-4 space-y-1">
                           <Label>Label</Label>
                           <Input
                             value={v.label}
@@ -322,7 +322,7 @@ export default function TourForm({
                             }}
                           />
                         </div>
-                        <div className="col-span-6 sm:col-span-3 space-y-1">
+                        <div className="col-span-6 sm:col-span-2 space-y-1">
                           <Label>Duration (min)</Label>
                           <Input
                             type="number"
@@ -340,7 +340,25 @@ export default function TourForm({
                             }}
                           />
                         </div>
-                        <div className="col-span-12 sm:col-span-1 flex sm:justify-end sm:pt-7">
+                        <div className="col-span-6 sm:col-span-2 space-y-1">
+                          <Label>Guests</Label>
+                          <Input
+                            type="number"
+                            min={0}
+                            value={v.maxGuests ?? ""}
+                            onChange={(e) => {
+                              const next = [...form.variations];
+                              next[i] = {
+                                ...v,
+                                maxGuests: e.target.value
+                                  ? parseInt(e.target.value)
+                                  : null,
+                              };
+                              set("variations", next);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-1 flex sm:justify-end sm:pt-7">
                           <button
                             type="button"
                             aria-label="Remove variation"
