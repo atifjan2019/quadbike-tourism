@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <circle cx="48" cy="48" r="48" fill="#F7C83B"/>
+  <circle cx="48" cy="48" r="44" fill="none" stroke="#1B1F23" stroke-width="2"/>
+  <text x="48" y="62" text-anchor="middle" font-family="Arial Black, Helvetica, sans-serif" font-size="36" font-weight="900" fill="#1B1F23" letter-spacing="-1">KH</text>
+</svg>

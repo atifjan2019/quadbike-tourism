@@ -176,14 +176,7 @@ export default async function TourDetailPage(props: {
 
             {tour.description && (
               <article
-                className="prose prose-neutral max-w-none
-                  prose-headings:font-extrabold prose-headings:text-brand-dark
-                  prose-h2:text-[24px] prose-h2:mt-8 prose-h2:mb-3
-                  prose-h3:text-[18px] prose-h3:mt-6 prose-h3:mb-2
-                  prose-p:text-[15px] prose-p:leading-[26px] prose-p:text-black/80
-                  prose-ul:my-3 prose-li:my-1 prose-li:text-black/80
-                  prose-a:text-brand-orange prose-a:no-underline hover:prose-a:underline
-                  prose-strong:text-brand-dark"
+                className="tour-prose"
                 dangerouslySetInnerHTML={{ __html: tour.description }}
               />
             )}

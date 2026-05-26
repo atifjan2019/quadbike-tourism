@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { Calendar, MessageCircle, X } from "lucide-react";
+import { Calendar, MessageCircle, Minus, Plus, X } from "lucide-react";
 
 export type BookingVariation = {
   id: string;
@@ -27,10 +27,14 @@ export default function BookingPanel({
   variations: BookingVariation[];
   whatsapp?: string;
 }) {
+  const isPerPerson = variations.length === 0;
+
   const [bookingDate, setBookingDate] = useState("");
   const [selectedVarId, setSelectedVarId] = useState<string | null>(
     variations[0]?.id ?? null,
   );
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [reference, setReference] = useState<string | null>(null);
@@ -54,7 +58,9 @@ export default function BookingPanel({
   );
 
   const unitPrice = selectedVariation ? selectedVariation.price : priceFrom;
-  const total = unitPrice * form.guests;
+  // Per-person tours scale by adult count (children are free headcount).
+  // Variation-based tours scale by the modal's guests field.
+  const total = isPerPerson ? unitPrice * adults : unitPrice * form.guests;
 
   useEffect(() => {
     if (!modalOpen) return;
@@ -83,6 +89,17 @@ export default function BookingPanel({
     setStatus("submitting");
     setErrorMsg(null);
     try {
+      // For per-person tours: persist the adult/child split inside notes,
+      // and send guests = adults + children so the booking record reflects
+      // the full headcount. For variation tours the modal still owns guests.
+      const breakdownLine = isPerPerson
+        ? `Adults: ${adults}, Children: ${children}`
+        : null;
+      const combinedNotes = breakdownLine
+        ? [breakdownLine, form.notes].filter(Boolean).join("\n")
+        : form.notes;
+      const guestsTotal = isPerPerson ? adults + children : form.guests;
+
       const res = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,8 +111,8 @@ export default function BookingPanel({
           customerName: form.customerName,
           customerEmail: form.customerEmail,
           customerPhone: form.customerPhone,
-          guests: form.guests,
-          notes: form.notes,
+          guests: guestsTotal,
+          notes: combinedNotes,
         }),
       });
       const data = await res.json();
@@ -154,6 +171,35 @@ export default function BookingPanel({
               })}
             </div>
           </div>
+        )}
+
+        {isPerPerson && (
+          <>
+            <div>
+              <label className="block text-[14px] font-bold text-brand-dark mb-2">
+                Number of Persons <span className="text-red-500">*</span>
+              </label>
+              <Stepper
+                value={adults}
+                min={1}
+                max={20}
+                onChange={setAdults}
+                hint={`AED ${priceFrom.toLocaleString(undefined, { minimumFractionDigits: 2 })} per adult`}
+              />
+            </div>
+            <div>
+              <label className="block text-[14px] font-bold text-brand-dark mb-2">
+                Number of Children
+              </label>
+              <Stepper
+                value={children}
+                min={0}
+                max={10}
+                onChange={setChildren}
+                hint="Children join free"
+              />
+            </div>
+          </>
         )}
 
         <div className="flex items-center justify-between gap-4 pt-2 border-t border-black/10">
@@ -342,22 +388,33 @@ export default function BookingPanel({
                       </select>
                     </ModalField>
                   )}
-                  <ModalField label="Number of Guests" required>
-                    <input
-                      required
-                      type="number"
-                      min={1}
-                      max={30}
-                      value={form.guests}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          guests: Math.max(1, Number(e.target.value || 1)),
-                        })
-                      }
-                      className="modal-input"
-                    />
-                  </ModalField>
+                  {isPerPerson ? (
+                    <ModalField label="Headcount">
+                      <div className="h-11 px-3 inline-flex items-center text-[14px] text-brand-dark font-bold border border-black/15 rounded-md bg-brand-cream/50">
+                        {adults} adult{adults === 1 ? "" : "s"}
+                        {children > 0
+                          ? ` · ${children} child${children === 1 ? "" : "ren"}`
+                          : ""}
+                      </div>
+                    </ModalField>
+                  ) : (
+                    <ModalField label="Number of Guests" required>
+                      <input
+                        required
+                        type="number"
+                        min={1}
+                        max={30}
+                        value={form.guests}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            guests: Math.max(1, Number(e.target.value || 1)),
+                          })
+                        }
+                        className="modal-input"
+                      />
+                    </ModalField>
+                  )}
                 </div>
 
                 <ModalField label="Special Requests">
@@ -424,5 +481,54 @@ function ModalField({
       </span>
       {children}
     </label>
+  );
+}
+
+function Stepper({
+  value,
+  min,
+  max,
+  onChange,
+  hint,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  onChange: (v: number) => void;
+  hint?: string;
+}) {
+  const dec = () => onChange(Math.max(min, value - 1));
+  const inc = () => onChange(Math.min(max, value + 1));
+  const canDec = value > min;
+  const canInc = value < max;
+  return (
+    <div className="flex items-center gap-3">
+      <div className="inline-flex items-center border-2 border-black/15 rounded-md overflow-hidden">
+        <button
+          type="button"
+          onClick={dec}
+          disabled={!canDec}
+          aria-label="Decrease"
+          className="w-10 h-10 inline-flex items-center justify-center text-brand-dark hover:bg-brand-cream/60 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Minus className="w-4 h-4" />
+        </button>
+        <span className="w-12 text-center text-[16px] font-extrabold text-brand-dark tabular-nums select-none">
+          {value}
+        </span>
+        <button
+          type="button"
+          onClick={inc}
+          disabled={!canInc}
+          aria-label="Increase"
+          className="w-10 h-10 inline-flex items-center justify-center text-brand-dark hover:bg-brand-cream/60 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+      </div>
+      {hint && (
+        <span className="text-[12px] text-black/55 font-semibold">{hint}</span>
+      )}
+    </div>
   );
 }
