@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 
-const SITE_URL = "https://quadbiketourism.com";
+const SITE_URL = "https://www.quadbiketourism.com";
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -75,10 +75,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
       "max-video-preview": -1,
     },
-  },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
   },
   other: {
     "p:domain_verify": "a9dfa325441e121ea3ad5bae7ca86e45",

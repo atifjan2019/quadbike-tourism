@@ -29,8 +29,8 @@ export default function TermsConditionsPage() {
               <p>
                 These terms and conditions outline the rules and regulations for
                 the use of Quad Bike Tourism&apos;s Website, located at{" "}
-                <a className="underline" href="https://quadbiketourism.com/">
-                  https://quadbiketourism.com/
+                <a className="underline" href="https://www.quadbiketourism.com/">
+                  https://www.quadbiketourism.com/
                 </a>
                 .
               </p>

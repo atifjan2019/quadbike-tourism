@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "quadbiketourism.com", pathname: "/wp-content/uploads/**" },
+      { protocol: "https", hostname: "www.quadbiketourism.com", pathname: "/wp-content/uploads/**" },
     ],
   },
   async redirects() {

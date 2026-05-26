@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/api/", "/_next/"],
       },
     ],
-    sitemap: "https://quadbiketourism.com/sitemap.xml",
-    host: "https://quadbiketourism.com",
+    sitemap: "https://www.quadbiketourism.com/sitemap.xml",
+    host: "https://www.quadbiketourism.com",
   };
 }
