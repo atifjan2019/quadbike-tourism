@@ -28,7 +28,7 @@ export default function Hero() {
               width={180}
               height={120}
               sizes="180px"
-              className="absolute -right-[160px] -bottom-[190px] select-none pointer-events-none hidden sm:block"
+              className="absolute -right-8 sm:-right-16 md:-right-24 lg:-right-[160px] -bottom-[120px] sm:-bottom-[150px] lg:-bottom-[190px] select-none pointer-events-none hidden sm:block"
               style={{ width: "160px", height: "auto" }}
               priority
             />
