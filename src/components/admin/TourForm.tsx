@@ -225,6 +225,14 @@ export default function TourForm({
         <TabsContent value="pricing">
           <Card>
             <CardContent className="space-y-4">
+              <p className="text-xs text-black/60 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+                <span className="font-bold">How pricing works:</span> the
+                fields below are the headline values shown in listings
+                (&quot;From AED …&quot;). If you add variations, the cheapest
+                variation price will automatically replace &quot;Price From&quot;
+                when you save. Duration &amp; Max Guests below are the defaults
+                shown when no variation is selected.
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1">
                   <Label>Price From (AED)</Label>

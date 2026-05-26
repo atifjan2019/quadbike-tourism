@@ -49,6 +49,13 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
 
   const { variations, ...tourData } = parsed.data;
 
+  // When variations are provided, derive priceFrom from the cheapest tier
+  // so the listing "From AED X" always matches the lowest bookable tier.
+  if (variations && variations.length > 0) {
+    const minPrice = Math.min(...variations.map((v) => v.price));
+    tourData.priceFrom = minPrice;
+  }
+
   const tour = await prisma.$transaction(async (tx) => {
     const updated = await tx.tour.update({ where: { id }, data: tourData });
 
