@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -48,14 +49,16 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           open ? "translate-x-0" : "-translate-x-full"
         } lg:static lg:flex lg:flex-col`}
       >
-        <div className="h-16 px-5 flex items-center border-b border-white/10">
-          <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <span className="font-display text-2xl text-brand-yellow leading-none">QB</span>
-            <span className="text-white font-extrabold tracking-wide text-sm leading-tight">
-              QUAD BIKE
-              <br />
-              <span className="text-brand-yellow">ADMIN</span>
-            </span>
+        <div className="h-20 px-5 flex items-center border-b border-white/10">
+          <Link href="/admin/dashboard" className="flex items-center" aria-label="Admin home">
+            <Image
+              src="/uploads/buggy-desert-1.png"
+              alt="Quad Bike Tourism"
+              width={180}
+              height={80}
+              priority
+              className="h-14 w-auto object-contain"
+            />
           </Link>
         </div>
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
@@ -80,7 +83,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </nav>
         <button
           onClick={logout}
-          className="m-3 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-md text-sm font-bold uppercase tracking-wide text-white/80 hover:bg-white/10"
+          className="m-3 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-md text-sm font-bold uppercase tracking-wide bg-brand-yellow text-brand-dark hover:brightness-95"
         >
           <LogOut className="w-4 h-4" />
           Log out
