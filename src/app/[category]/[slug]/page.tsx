@@ -13,6 +13,7 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 import SmartImage from "@/components/SmartImage";
 import TourGallery from "@/components/TourGallery";
 import BookingPanel, { type BookingVariation } from "@/components/BookingPanel";
+import Breadcrumb from "@/components/Breadcrumb";
 import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -112,6 +113,13 @@ export default async function TourDetailPage(props: {
     <>
       <Header />
       <main className="flex-1 bg-white">
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "/" },
+            { label: tour.category.name, href: `/${tour.category.slug}/` },
+            { label: tour.title },
+          ]}
+        />
         {/* Hero title band */}
         <section className="bg-brand-cream/60 border-b border-black/5">
           <div className="container-site py-14 sm:py-20 text-center">

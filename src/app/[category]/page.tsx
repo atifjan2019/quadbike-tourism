@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import SmartImage from "@/components/SmartImage";
+import Breadcrumb from "@/components/Breadcrumb";
 import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -65,6 +66,13 @@ export default async function CategoryPage(props: {
     <>
       <Header />
       <main className="flex-1">
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Tours", href: "/tours/" },
+            { label: cat.name },
+          ]}
+        />
         {/* Hero */}
         <section className="relative bg-brand-ink text-white overflow-hidden">
           <div className="absolute inset-0 opacity-30">

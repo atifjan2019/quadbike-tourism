@@ -13,6 +13,7 @@
     "db:import:variations": "tsx prisma/import-variations.ts",
     "db:import:media": "tsx prisma/import-media.ts",
     "db:rewrite:images": "tsx prisma/rewrite-image-urls.ts",
+    "db:import:descriptions": "tsx prisma/import-descriptions.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },

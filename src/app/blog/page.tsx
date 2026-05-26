@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { format } from "date-fns";
+import { Search } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import SmartImage from "@/components/SmartImage";
 import { prisma } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -21,17 +23,33 @@ const PAGE_SIZE = 20;
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; q?: string }>;
 }) {
-  const { page } = await searchParams;
+  const { page, q } = await searchParams;
   const requested = Number.parseInt(page ?? "1", 10);
   const currentPage = Number.isFinite(requested) && requested >= 1 ? requested : 1;
+  const query = (q ?? "").trim();
 
-  const where = {
-    status: "PUBLISHED" as const,
-    OR: [
-      { publishedAt: null },
-      { publishedAt: { lte: new Date() } },
+  const where: Prisma.BlogPostWhereInput = {
+    status: "PUBLISHED",
+    AND: [
+      {
+        OR: [
+          { publishedAt: null },
+          { publishedAt: { lte: new Date() } },
+        ],
+      },
+      ...(query
+        ? [
+            {
+              OR: [
+                { title: { contains: query, mode: "insensitive" as const } },
+                { excerpt: { contains: query, mode: "insensitive" as const } },
+                { content: { contains: query, mode: "insensitive" as const } },
+              ],
+            },
+          ]
+        : []),
     ],
   };
   const total = await prisma.blogPost.count({ where });
@@ -45,7 +63,13 @@ export default async function BlogPage({
     take: PAGE_SIZE,
   });
 
-  const pageHref = (n: number) => (n === 1 ? "/blog/" : `/blog/?page=${n}`);
+  const pageHref = (n: number) => {
+    const params = new URLSearchParams();
+    if (n > 1) params.set("page", String(n));
+    if (query) params.set("q", query);
+    const qs = params.toString();
+    return qs ? `/blog/?${qs}` : "/blog/";
+  };
 
   return (
     <>
@@ -56,12 +80,45 @@ export default async function BlogPage({
             <h1 className="text-[34px] sm:text-[44px] font-extrabold leading-tight mb-3">
               Blog
             </h1>
-            <p className="text-[18px] leading-[32px] text-black/70 mb-10">
+            <p className="text-[18px] leading-[32px] text-black/70 mb-6">
               Stories, guides and travel tips from the dunes.
             </p>
 
+            <form method="GET" action="/blog/" className="mb-10 max-w-[520px]">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-black/40 pointer-events-none" />
+                <input
+                  type="search"
+                  name="q"
+                  defaultValue={query}
+                  placeholder="Search blog posts…"
+                  className="w-full h-12 pl-11 pr-28 border border-black/15 rounded-md text-[15px] outline-none focus:border-brand-dark focus:ring-2 focus:ring-brand-yellow/40"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1.5 top-1.5 h-9 px-4 bg-brand-dark text-white rounded-md text-[12px] font-extrabold uppercase tracking-[1.5px] hover:bg-black"
+                >
+                  Search
+                </button>
+              </div>
+              {query && (
+                <p className="mt-3 text-[13px] text-black/60">
+                  {total} result{total === 1 ? "" : "s"} for
+                  <span className="font-bold text-brand-dark"> &ldquo;{query}&rdquo;</span>{" "}
+                  &middot;{" "}
+                  <Link href="/blog/" className="underline hover:text-brand-dark">
+                    Clear
+                  </Link>
+                </p>
+              )}
+            </form>
+
             {posts.length === 0 ? (
-              <p className="text-black/60">No posts published yet — check back soon.</p>
+              <p className="text-black/60">
+                {query
+                  ? `No posts match “${query}”.`
+                  : "No posts published yet — check back soon."}
+              </p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {posts.map((p) => (

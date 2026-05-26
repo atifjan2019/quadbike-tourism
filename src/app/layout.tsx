@@ -30,7 +30,7 @@ const brillante = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://quadbiketourism.com"),
   title: {
-    default: "Desert Dune Buggy – Desert Quad Biking",
+    default: "Desert Quad Biking in Dubai – Book Your Adventure Today!",
     template: "%s | Quad Bike Tourism",
   },
   description:

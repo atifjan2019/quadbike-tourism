@@ -41,12 +41,13 @@ export default function ContactUsPage() {
         {/* Full width map */}
         <section className="w-full">
           <iframe
-            title="Quad Bike Tourism — United Arab Emirates"
-            src="https://www.google.com/maps?q=United+Arab+Emirates&output=embed"
+            title="Quad Bike Tourism — Dubai Desert Safari"
+            src="https://www.google.com/maps?q=Dubai+Desert+Safari+Camp&output=embed&z=11"
             width="100%"
             height="420"
             style={{ border: 0 }}
             loading="lazy"
+            allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
             className="block w-full"
           />
