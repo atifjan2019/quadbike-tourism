@@ -29,7 +29,7 @@ export default function Hero() {
               height={120}
               sizes="180px"
               className="absolute -right-8 sm:-right-16 md:-right-24 lg:-right-[160px] -bottom-[120px] sm:-bottom-[150px] lg:-bottom-[190px] select-none pointer-events-none hidden sm:block"
-              style={{ width: "160px", height: "auto" }}
+              style={{ width: "120px", height: "auto" }}
               priority
             />
           </div>
@@ -57,7 +57,7 @@ export default function Hero() {
           height={140}
           sizes="220px"
           className="select-none"
-          style={{ width: "180px", height: "auto" }}
+          style={{ width: "135px", height: "auto" }}
         />
       </div>
     </section>
