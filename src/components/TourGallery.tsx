@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
-import SmartImage from "./SmartImage";
 
 export default function TourGallery({
   title,
@@ -54,7 +54,7 @@ export default function TourGallery({
           className="relative w-full aspect-[16/11] rounded-md overflow-hidden bg-black/5 border border-black/10 block group"
           aria-label="Zoom image"
         >
-          <SmartImage
+          <Image
             src={main}
             alt={title}
             fill
@@ -84,7 +84,7 @@ export default function TourGallery({
                   }`}
                   aria-label={`Show image ${i + 1}`}
                 >
-                  <SmartImage
+                  <Image
                     src={src}
                     alt={`${title} thumbnail ${i + 1}`}
                     fill
@@ -146,7 +146,7 @@ export default function TourGallery({
             className="relative w-full max-w-[1100px] aspect-[16/10]"
             onClick={(e) => e.stopPropagation()}
           >
-            <SmartImage
+            <Image
               src={main}
               alt={title}
               fill

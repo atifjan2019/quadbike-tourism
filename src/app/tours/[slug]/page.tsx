@@ -107,11 +107,8 @@ export default async function TourDetailPage(props: {
       <main className="flex-1 bg-white">
         {/* Hero title band */}
         <section className="bg-brand-cream/60 border-b border-black/5">
-          <div className="container-site py-10 sm:py-14 text-center">
-            <p className="text-[12px] uppercase tracking-[3px] text-brand-orange font-extrabold mb-3">
-              {tour.category.name}
-            </p>
-            <h1 className="text-[28px] sm:text-[42px] lg:text-[48px] font-extrabold tracking-tight text-brand-dark uppercase leading-[1.1]">
+          <div className="container-site py-14 sm:py-20 text-center">
+            <h1 className="text-[32px] sm:text-[44px] lg:text-[50px] font-extrabold tracking-tight uppercase text-[#3B3B3B] leading-[1.2] sm:leading-[60px]">
               {tour.title}
             </h1>
           </div>
