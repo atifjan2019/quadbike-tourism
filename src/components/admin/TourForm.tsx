@@ -18,6 +18,7 @@ export type VariationDraft = {
   label: string;
   price: number;
   durationMin: number | null;
+  maxGuests: number | null;
 };
 
 type Initial = {
@@ -272,7 +273,7 @@ export default function TourForm({
                     onClick={() =>
                       set("variations", [
                         ...form.variations,
-                        { label: "", price: 0, durationMin: null },
+                        { label: "", price: 0, durationMin: null, maxGuests: null },
                       ])
                     }
                   >

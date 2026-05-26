@@ -58,6 +58,7 @@ model Variation {
   label       String
   price       Decimal @db.Decimal(10, 2)
   durationMin Int?
+  maxGuests   Int?
 
   @@index([tourId])
 }

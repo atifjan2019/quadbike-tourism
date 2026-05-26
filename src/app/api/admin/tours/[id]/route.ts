@@ -7,6 +7,7 @@ const VariationInput = z.object({
   label: z.string().min(1),
   price: z.coerce.number().nonnegative(),
   durationMin: z.coerce.number().int().nonnegative().optional().nullable(),
+  maxGuests: z.coerce.number().int().nonnegative().optional().nullable(),
 });
 
 const TourUpdate = z.object({
@@ -65,7 +66,12 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
         if (v.id) {
           await tx.variation.update({
             where: { id: v.id },
-            data: { label: v.label, price: v.price, durationMin: v.durationMin ?? null },
+            data: {
+              label: v.label,
+              price: v.price,
+              durationMin: v.durationMin ?? null,
+              maxGuests: v.maxGuests ?? null,
+            },
           });
         } else {
           await tx.variation.create({
@@ -74,6 +80,7 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
               label: v.label,
               price: v.price,
               durationMin: v.durationMin ?? null,
+              maxGuests: v.maxGuests ?? null,
             },
           });
         }
