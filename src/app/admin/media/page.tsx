@@ -12,6 +12,9 @@ type FileItem = {
   modifiedAt: string;
   dbId: string | null;
   alt: string | null;
+  title: string | null;
+  caption: string | null;
+  description: string | null;
 };
 
 async function getMedia(): Promise<FileItem[]> {
