@@ -2,8 +2,8 @@ import SmartImage from "@/components/SmartImage";
 
 export default function Hero() {
   return (
-    <section className="relative bg-black text-white overflow-hidden">
-      <div className="container-site grid grid-cols-1 lg:grid-cols-2 items-center min-h-[640px] py-16 lg:py-0 gap-10">
+    <section className="relative bg-black text-white">
+      <div className="container-site grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] items-center min-h-[520px] py-8 lg:py-4 gap-10">
         {/* Left copy */}
         <div className="relative lg:pl-2 z-10 text-center lg:text-left">
           <p className="font-display text-white text-[20px] sm:text-[28px] lg:text-[40px] leading-none tracking-[2px] mb-2 sm:mb-3">
@@ -28,7 +28,7 @@ export default function Hero() {
               width={180}
               height={120}
               sizes="180px"
-              className="absolute -right-[120px] -bottom-[80px] select-none pointer-events-none hidden sm:block"
+              className="absolute -right-[160px] -bottom-[190px] select-none pointer-events-none hidden sm:block"
               style={{ width: "160px", height: "auto" }}
               priority
             />
@@ -36,32 +36,30 @@ export default function Hero() {
         </div>
 
         {/* Right hero image */}
-        <div className="relative w-full">
-          <div className="relative w-full h-[300px] sm:h-[420px] lg:h-[640px]">
-            <SmartImage
-              src="/images/buggy-hero.webp"
-              alt="Premium desert buggy ready for adventure"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain object-top lg:object-right"
-            />
-          </div>
-          {/* Yellow arrow below buggy on mobile */}
-          <div className="flex justify-center lg:hidden -mt-2">
-            <SmartImage
-              src="/images/yellow-arrow.png"
-              alt=""
-              width={220}
-              height={140}
-              sizes="220px"
-              className="select-none pointer-events-none"
-              style={{ width: "180px", height: "auto" }}
-            />
-          </div>
+        <div className="relative w-full h-[280px] sm:h-[400px] lg:h-[560px] lg:-mr-12 xl:-mr-24">
+          <SmartImage
+            src="/images/buggy-hero.webp"
+            alt="Premium desert buggy ready for adventure"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            className="object-contain object-top lg:object-right scale-[0.95] lg:scale-[1.08] origin-center lg:origin-right"
+          />
         </div>
       </div>
 
+      {/* Yellow arrow straddles bottom edge on mobile (50% on black, 50% below) */}
+      <div className="absolute left-1/2 bottom-0 translate-y-[40%] ml-6 sm:hidden pointer-events-none z-20">
+        <SmartImage
+          src="/images/yellow-arrow.png"
+          alt=""
+          width={220}
+          height={140}
+          sizes="220px"
+          className="select-none"
+          style={{ width: "180px", height: "auto" }}
+        />
+      </div>
     </section>
   );
 }
