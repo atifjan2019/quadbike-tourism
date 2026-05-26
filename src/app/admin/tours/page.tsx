@@ -68,7 +68,7 @@ export default async function ToursPage() {
                     <TD className="text-right">
                       <div className="inline-flex items-center gap-1">
                         <Link
-                          href={`/tours/#${t.category.slug}`}
+                          href={`/tours/${t.slug}/`}
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`Preview ${t.title}`}
