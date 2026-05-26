@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { X } from "lucide-react";
 
-const PHONE = "971500000000";
+const PHONE = "923448959905";
 const AGENT = "Quad Bike Tourism";
 const DEFAULT_MSG =
   "Hi Quad Bike Tourism, I'd like to book a tour. Could you help me?";
@@ -38,8 +39,14 @@ export default function WhatsAppFloat() {
           {/* Header */}
           <div className="bg-[#075E54] text-white px-4 py-3 flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-white text-[#075E54] flex items-center justify-center font-extrabold text-[14px]">
-                QB
+              <div className="w-12 h-12 rounded-full bg-white overflow-hidden flex items-center justify-center p-1">
+                <Image
+                  src="/uploads/buggy-desert-1.png"
+                  alt="Quad Bike Tourism"
+                  width={80}
+                  height={80}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#25D366] border-2 border-[#075E54]" />
             </div>
