@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { Calendar, MessageCircle, X } from "lucide-react";
 
 export type BookingVariation = {
@@ -43,6 +44,9 @@ export default function BookingPanel({
     guests: 1,
     notes: "",
   });
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const selectedVariation = useMemo(
     () => variations.find((v) => v.id === selectedVarId) ?? null,
@@ -128,7 +132,7 @@ export default function BookingPanel({
         {variations.length > 0 && (
           <div>
             <label className="block text-[14px] font-bold text-brand-dark mb-2">
-              Select Tour <span className="text-red-500">*</span>
+              Select Tour
             </label>
             <div className="flex flex-wrap gap-2">
               {variations.map((v) => {
@@ -184,8 +188,8 @@ export default function BookingPanel({
         )}
       </div>
 
-      {/* Modal */}
-      {modalOpen && (
+      {/* Modal — portaled to body so it escapes the sticky aside's stacking context */}
+      {modalOpen && mounted && createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={() => setModalOpen(false)}
@@ -324,9 +328,8 @@ export default function BookingPanel({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {variations.length > 0 && (
-                    <ModalField label="Tour Duration" required>
+                    <ModalField label="Tour Duration">
                       <select
-                        required
                         value={selectedVarId ?? ""}
                         onChange={(e) => setSelectedVarId(e.target.value)}
                         className="modal-input"
@@ -339,7 +342,7 @@ export default function BookingPanel({
                       </select>
                     </ModalField>
                   )}
-                  <ModalField label="Number of Riders" required>
+                  <ModalField label="Number of Guests" required>
                     <input
                       required
                       type="number"
@@ -397,7 +400,8 @@ export default function BookingPanel({
               </form>
             )}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

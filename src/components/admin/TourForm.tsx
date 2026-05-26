@@ -10,7 +10,7 @@ import { Select } from "@/components/ui/Select";
 import { Switch } from "@/components/ui/Switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { Card, CardContent } from "@/components/ui/Card";
-import RichEditor from "./RichEditor";
+import QuillEditor from "./QuillEditor";
 import { Trash2, Plus } from "lucide-react";
 
 export type VariationDraft = {
@@ -197,7 +197,7 @@ export default function TourForm({
               </div>
               <div className="space-y-1">
                 <Label>Description</Label>
-                <RichEditor
+                <QuillEditor
                   value={form.description}
                   onChange={(html) => set("description", html)}
                 />

@@ -130,7 +130,7 @@ export default async function ToursPage() {
                         className="group relative bg-white border border-black/10 rounded-lg overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition duration-300"
                       >
                         <Link
-                          href={`/tours/${t.slug}/`}
+                          href={`/${cat.slug}/${t.slug}/`}
                           className="block relative aspect-[16/11] bg-black/5 overflow-hidden"
                         >
                           {t.featuredImage ? (
@@ -156,7 +156,7 @@ export default async function ToursPage() {
                         <div className="p-5 flex flex-col flex-1">
                           <h3 className="text-[20px] font-extrabold leading-tight text-brand-dark">
                             <Link
-                              href={`/tours/${t.slug}/`}
+                              href={`/${cat.slug}/${t.slug}/`}
                               className="hover:text-brand-orange"
                             >
                               {t.title}
@@ -194,7 +194,7 @@ export default async function ToursPage() {
                               </p>
                             </div>
                             <Link
-                              href={`/tours/${t.slug}/`}
+                              href={`/${cat.slug}/${t.slug}/`}
                               className="inline-flex items-center gap-2 bg-brand-yellow text-brand-dark font-extrabold uppercase tracking-[2px] text-[12px] px-4 h-11 rounded-md border-2 border-brand-dark hover:brightness-95"
                             >
                               Book Now

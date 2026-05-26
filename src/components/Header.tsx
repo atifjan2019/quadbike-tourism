@@ -23,10 +23,10 @@ export default async function Header() {
     { label: "Home", href: "/", active: true },
     ...categories.map((c) => ({
       label: c.name,
-      href: `/tours/#${c.slug}`,
+      href: `/${c.slug}/`,
       children: c.tours.map((t) => ({
         label: t.title,
-        href: `/tours/${t.slug}/`,
+        href: `/${c.slug}/${t.slug}/`,
       })),
     })),
     { label: "Blogs", href: "/blog/" },
