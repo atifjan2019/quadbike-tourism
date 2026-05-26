@@ -13,6 +13,13 @@ import { Card, CardContent } from "@/components/ui/Card";
 import RichEditor from "./RichEditor";
 import { Trash2, Plus } from "lucide-react";
 
+export type VariationDraft = {
+  id?: string;
+  label: string;
+  price: number;
+  durationMin: number | null;
+};
+
 type Initial = {
   id?: string;
   title: string;
@@ -30,6 +37,7 @@ type Initial = {
   featured: boolean;
   seoTitle: string;
   seoDesc: string;
+  variations: VariationDraft[];
 };
 
 const blank: Initial = {
@@ -48,6 +56,7 @@ const blank: Initial = {
   featured: false,
   seoTitle: "",
   seoDesc: "",
+  variations: [],
 };
 
 function slugify(s: string) {
@@ -83,10 +92,19 @@ export default function TourForm({
       const url =
         mode === "create" ? "/api/admin/tours" : `/api/admin/tours/${initial?.id}`;
       const method = mode === "create" ? "POST" : "PATCH";
+      // POST creates the tour first; variations are saved via PATCH after.
+      const body =
+        mode === "create"
+          ? (() => {
+              const { variations: _variations, ...rest } = form;
+              void _variations;
+              return rest;
+            })()
+          : form;
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error?.[0]?.message || data.error || "Save failed");
@@ -240,9 +258,108 @@ export default function TourForm({
                   />
                 </div>
               </div>
-              <p className="text-xs text-black/50">
-                Variations (multi-tier pricing) can be added later from the API — UI coming soon.
-              </p>
+              <div className="pt-4 border-t border-black/10">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <Label>Pricing variations</Label>
+                    <p className="text-xs text-black/50">
+                      Optional tiers (e.g. 30 Minutes / 60 Minutes). Each variation has its own label, price, and duration.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() =>
+                      set("variations", [
+                        ...form.variations,
+                        { label: "", price: 0, durationMin: null },
+                      ])
+                    }
+                  >
+                    <Plus className="w-4 h-4" />
+                    ADD VARIATION
+                  </Button>
+                </div>
+
+                {form.variations.length === 0 ? (
+                  <p className="text-sm text-black/50 bg-zinc-50 border border-dashed border-black/15 rounded px-4 py-6 text-center">
+                    No variations yet. Click <span className="font-bold">Add Variation</span> to create one.
+                  </p>
+                ) : (
+                  <ul className="space-y-2">
+                    {form.variations.map((v, i) => (
+                      <li
+                        key={v.id ?? `new-${i}`}
+                        className="grid grid-cols-12 gap-2 items-start bg-zinc-50 border border-black/10 rounded px-3 py-3"
+                      >
+                        <div className="col-span-12 sm:col-span-5 space-y-1">
+                          <Label>Label</Label>
+                          <Input
+                            value={v.label}
+                            placeholder="e.g. 30 Minutes"
+                            onChange={(e) => {
+                              const next = [...form.variations];
+                              next[i] = { ...v, label: e.target.value };
+                              set("variations", next);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3 space-y-1">
+                          <Label>Price (AED)</Label>
+                          <Input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            value={v.price}
+                            onChange={(e) => {
+                              const next = [...form.variations];
+                              next[i] = {
+                                ...v,
+                                price: parseFloat(e.target.value || "0"),
+                              };
+                              set("variations", next);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3 space-y-1">
+                          <Label>Duration (min)</Label>
+                          <Input
+                            type="number"
+                            min={0}
+                            value={v.durationMin ?? ""}
+                            onChange={(e) => {
+                              const next = [...form.variations];
+                              next[i] = {
+                                ...v,
+                                durationMin: e.target.value
+                                  ? parseInt(e.target.value)
+                                  : null,
+                              };
+                              set("variations", next);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-12 sm:col-span-1 flex sm:justify-end sm:pt-7">
+                          <button
+                            type="button"
+                            aria-label="Remove variation"
+                            title="Remove"
+                            className="inline-flex items-center justify-center w-9 h-9 rounded-md text-black/60 hover:text-red-600 hover:bg-red-50"
+                            onClick={() =>
+                              set(
+                                "variations",
+                                form.variations.filter((_, j) => j !== i),
+                              )
+                            }
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

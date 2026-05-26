@@ -9,7 +9,10 @@ export default async function EditTourPage(props: {
 }) {
   const { id } = await props.params;
   const [tour, categories] = await Promise.all([
-    prisma.tour.findUnique({ where: { id } }),
+    prisma.tour.findUnique({
+      where: { id },
+      include: { variations: { orderBy: { price: "asc" } } },
+    }),
     prisma.category.findMany({ orderBy: { order: "asc" } }),
   ]);
   if (!tour) notFound();
@@ -39,6 +42,12 @@ export default async function EditTourPage(props: {
           featured: tour.featured,
           seoTitle: tour.seoTitle ?? "",
           seoDesc: tour.seoDesc ?? "",
+          variations: tour.variations.map((v) => ({
+            id: v.id,
+            label: v.label,
+            price: Number(v.price),
+            durationMin: v.durationMin ?? null,
+          })),
         }}
       />
     </div>
