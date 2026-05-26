@@ -99,6 +99,11 @@ export default function Footer() {
                 Terms
               </Link>
             </li>
+            <li>
+              <Link href="/sitemap/" className="hover:text-brand-yellow">
+                Sitemap
+              </Link>
+            </li>
           </ul>
         </div>
 

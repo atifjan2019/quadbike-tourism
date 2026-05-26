@@ -9,7 +9,7 @@ export default function Breadcrumb({ items }: { items: Crumb[] }) {
       aria-label="Breadcrumb"
       className="bg-brand-cream/40 border-b border-black/5"
     >
-      <ol className="container-site py-3 text-[12px] sm:text-[13px] uppercase tracking-[2px] text-black/60 font-bold flex items-center gap-2 flex-wrap">
+      <ol className="container-site py-3 text-[12px] sm:text-[13px] uppercase tracking-[2px] text-black/60 font-bold flex items-center justify-center sm:justify-start gap-2 flex-wrap">
         {items.map((c, i) => {
           const isLast = i === items.length - 1;
           return (

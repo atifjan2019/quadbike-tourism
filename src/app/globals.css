@@ -87,6 +87,27 @@ html, body {
   color: #0a0a0a;
 }
 
+/* Infinite horizontal marquee — used for trust/feature strips on small screens */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 22s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
 /* ─────────────────────────────────────────────────────────────
    Tour description prose
    Used in /[category]/[slug] for HTML coming from WP/Quill.

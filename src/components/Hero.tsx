@@ -36,7 +36,7 @@ export default function Hero() {
         </div>
 
         {/* Right hero image */}
-        <div className="relative w-full h-[280px] sm:h-[400px] lg:h-[560px] lg:-mr-12 xl:-mr-24">
+        <div className="relative w-full h-[280px] sm:h-[400px] lg:h-[560px] -mt-[100px] sm:mt-0 lg:-mr-12 xl:-mr-24">
           <SmartImage
             src="/images/buggy-hero.webp"
             alt="Premium desert buggy ready for adventure"

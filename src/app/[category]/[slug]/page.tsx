@@ -131,18 +131,37 @@ export default async function TourDetailPage(props: {
 
         {/* Features bar */}
         <section className="container-site -mt-6 sm:-mt-8 relative z-10">
-          <div className="bg-white border border-black/10 rounded-md shadow-sm grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-black/10">
-            {FEATURES.map(({ icon: Icon, label }) => (
-              <div
-                key={label}
-                className="flex items-center gap-3 px-5 py-4 justify-center"
-              >
-                <Icon className="w-5 h-5 text-brand-dark" />
-                <span className="text-[12px] sm:text-[13px] uppercase tracking-[1.5px] font-bold text-brand-dark">
-                  {label}
-                </span>
+          <div className="bg-white border border-black/10 rounded-md shadow-sm overflow-hidden">
+            {/* Mobile / tablet: infinite auto-scrolling marquee */}
+            <div className="lg:hidden marquee-mask overflow-hidden">
+              <div className="marquee-track">
+                {[...FEATURES, ...FEATURES].map(({ icon: Icon, label }, i) => (
+                  <div
+                    key={`${label}-${i}`}
+                    className="flex items-center gap-3 px-6 py-4 justify-center shrink-0 whitespace-nowrap"
+                  >
+                    <Icon className="w-5 h-5 text-brand-dark shrink-0" />
+                    <span className="text-[12px] sm:text-[13px] uppercase tracking-[1.5px] font-bold text-brand-dark">
+                      {label}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            {/* Desktop: static 4-column grid */}
+            <div className="hidden lg:grid lg:grid-cols-4 lg:divide-x divide-black/10">
+              {FEATURES.map(({ icon: Icon, label }) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-3 px-5 py-4 justify-center"
+                >
+                  <Icon className="w-5 h-5 text-brand-dark shrink-0" />
+                  <span className="text-[13px] uppercase tracking-[1.5px] font-bold text-brand-dark">
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
