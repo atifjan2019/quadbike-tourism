@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
@@ -47,8 +48,18 @@ function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-md rounded-lg border border-black/10 bg-white shadow-sm p-8">
-        <h1 className="text-2xl font-extrabold text-black">Admin passcode</h1>
-        <p className="mt-1 text-sm text-black/60">
+        <div className="flex justify-center mb-6">
+          <Image
+            src="/uploads/buggy-desert-1.png"
+            alt="Quad Bike Tourism"
+            width={200}
+            height={90}
+            priority
+            className="h-20 w-auto object-contain"
+          />
+        </div>
+        <h1 className="text-2xl font-extrabold text-black text-center">Admin passcode</h1>
+        <p className="mt-1 text-sm text-black/60 text-center">
           Enter the passcode to view saved bookings.
         </p>
 
