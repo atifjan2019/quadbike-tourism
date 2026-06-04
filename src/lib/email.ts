@@ -1,13 +1,23 @@
-import { Resend } from "resend";
+import nodemailer, { type Transporter } from "nodemailer";
 
-const apiKey = process.env.RESEND_API_KEY;
-const from = process.env.RESEND_FROM ?? "Quad Bike Tourism <bookings@quadbiketourism.com>";
-const adminEmail = process.env.ADMIN_EMAIL ?? "admin@quadbiketourism.com";
+const host = process.env.SMTP_HOST;
+const port = Number(process.env.SMTP_PORT ?? 587);
+const user = process.env.SMTP_USER;
+const pass = process.env.SMTP_PASS;
+const from = process.env.SMTP_FROM ?? "Quad Bike Tourism <bookings@quadbiketourism.com>";
+const adminEmail = process.env.ADMIN_EMAIL ?? "atifjan2019@gmail.com";
 
-let client: Resend | null = null;
+let client: Transporter | null = null;
 function getClient() {
-  if (!apiKey) return null;
-  if (!client) client = new Resend(apiKey);
+  if (!host || !user || !pass) return null;
+  if (!client) {
+    client = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465, // true for 465, false for 587/2525 (STARTTLS)
+      auth: { user, pass },
+    });
+  }
   return client;
 }
 
@@ -55,17 +65,17 @@ function bookingEmailHtml(b: BookingPayload, kind: "customer" | "admin") {
 export async function sendBookingEmails(b: BookingPayload) {
   const r = getClient();
   if (!r) {
-    console.warn("[email] RESEND_API_KEY not set — skipping booking emails");
+    console.warn("[email] SMTP_HOST/SMTP_USER/SMTP_PASS not set — skipping booking emails");
     return { skipped: true };
   }
   await Promise.allSettled([
-    r.emails.send({
+    r.sendMail({
       from,
       to: b.customerEmail,
       subject: `Booking ${b.reference} — Quad Bike Tourism`,
       html: bookingEmailHtml(b, "customer"),
     }),
-    r.emails.send({
+    r.sendMail({
       from,
       to: adminEmail,
       subject: `New booking ${b.reference}`,
@@ -78,7 +88,7 @@ export async function sendBookingEmails(b: BookingPayload) {
 export async function sendBookingConfirmedEmail(b: BookingPayload) {
   const r = getClient();
   if (!r) return { skipped: true };
-  await r.emails.send({
+  await r.sendMail({
     from,
     to: b.customerEmail,
     subject: `Booking confirmed — ${b.reference}`,
