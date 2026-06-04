@@ -21,6 +21,24 @@ function getClient() {
   return client;
 }
 
+export const adminRecipient = adminEmail;
+
+/** Low-level send helper shared by booking + contact flows. Returns {skipped:true} if SMTP isn't configured. */
+export async function sendMail(opts: {
+  to: string;
+  subject: string;
+  html: string;
+  replyTo?: string;
+}) {
+  const r = getClient();
+  if (!r) {
+    console.warn("[email] SMTP not configured — skipping send");
+    return { skipped: true };
+  }
+  await r.sendMail({ from, ...opts });
+  return { skipped: false };
+}
+
 type BookingPayload = {
   reference: string;
   customerName: string;
