@@ -39,7 +39,7 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   async function copyUrl(url: string, id: string) {
-    const full = origin ? `${origin}${url}` : url;
+    const full = /^https?:\/\//i.test(url) ? url : origin ? `${origin}${url}` : url;
     await navigator.clipboard.writeText(full);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 1200);
@@ -287,7 +287,11 @@ function EditModal({
   const [description, setDescription] = useState(item.description ?? "");
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
-  const fullUrl = origin ? `${origin}${item.url}` : item.url;
+  const fullUrl = /^https?:\/\//i.test(item.url)
+    ? item.url
+    : origin
+    ? `${origin}${item.url}`
+    : item.url;
 
   async function save() {
     setSaving(true);

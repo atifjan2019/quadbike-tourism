@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { readdir, stat, unlink } from "fs/promises";
 import { existsSync } from "fs";
 import path from "node:path";
+import { del } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 
 const PUBLIC_DIR = path.join(process.cwd(), "public");
@@ -57,7 +58,7 @@ export async function GET() {
     prisma.media.findMany(),
   ]);
   const dbByUrl = new Map(dbRows.map((r) => [r.url, r]));
-  const all = [...uploads, ...images].map((f) => {
+  const diskItems = [...uploads, ...images].map((f) => {
     const row = dbByUrl.get(f.url);
     return row
       ? {
@@ -70,6 +71,26 @@ export async function GET() {
         }
       : f;
   });
+
+  // DB rows not present on disk — e.g. files stored in Vercel Blob (absolute URLs)
+  const diskUrls = new Set([...uploads, ...images].map((f) => f.url));
+  const blobItems: FileItem[] = dbRows
+    .filter((r) => !diskUrls.has(r.url))
+    .map((r) => ({
+      id: encodeURIComponent(r.url),
+      url: r.url,
+      filename: r.filename,
+      source: "uploads",
+      sizeKB: 0,
+      modifiedAt: r.createdAt.toISOString(),
+      dbId: r.id,
+      alt: r.alt ?? null,
+      title: r.title ?? null,
+      caption: r.caption ?? null,
+      description: r.description ?? null,
+    }));
+
+  const all = [...blobItems, ...diskItems];
   all.sort((a, b) => (a.modifiedAt < b.modifiedAt ? 1 : -1));
   return NextResponse.json({ ok: true, media: all });
 }
@@ -77,8 +98,24 @@ export async function GET() {
 export async function DELETE(request: Request) {
   const url = new URL(request.url);
   const target = url.searchParams.get("url");
-  if (!target || !target.startsWith("/")) {
-    return NextResponse.json({ ok: false, error: "Missing or invalid 'url' param" }, { status: 400 });
+  if (!target) {
+    return NextResponse.json({ ok: false, error: "Missing 'url' param" }, { status: 400 });
+  }
+
+  // Vercel Blob assets use absolute URLs — delete from blob storage, not disk
+  if (/^https?:\/\//i.test(target)) {
+    try {
+      await del(target);
+    } catch (e) {
+      // If the blob is already gone, still clear the DB row below
+      console.error("[media] blob delete failed:", e);
+    }
+    await prisma.media.deleteMany({ where: { url: target } });
+    return NextResponse.json({ ok: true });
+  }
+
+  if (!target.startsWith("/")) {
+    return NextResponse.json({ ok: false, error: "Invalid 'url' param" }, { status: 400 });
   }
   if (!target.startsWith("/images/") && !target.startsWith("/uploads/")) {
     return NextResponse.json(

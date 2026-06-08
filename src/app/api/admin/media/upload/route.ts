@@ -1,12 +1,7 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
 import sharp from "sharp";
+import { put } from "@vercel/blob";
 import { prisma } from "@/lib/db";
-
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
-const PUBLIC_PREFIX = "/uploads/";
 
 const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
 const ACCEPTED = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
@@ -30,7 +25,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "File too large (max 8 MB)" }, { status: 400 });
     }
 
-    if (!existsSync(UPLOAD_DIR)) await mkdir(UPLOAD_DIR, { recursive: true });
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "Blob storage is not configured. Add a Vercel Blob store to the project and set BLOB_READ_WRITE_TOKEN.",
+        },
+        { status: 500 }
+      );
+    }
 
     const arrayBuf = await file.arrayBuffer();
     const buf = Buffer.from(arrayBuf);
@@ -39,7 +43,6 @@ export async function POST(request: Request) {
     const stamp = Date.now().toString(36);
     const baseName = `${stamp}-${safeName}`;
     const webpName = baseName.replace(/\.(jpe?g|png|avif|webp)$/i, ".webp");
-    const targetPath = path.join(UPLOAD_DIR, webpName);
 
     // Resize/compress to webp (max 1600px wide)
     const out = await sharp(buf)
@@ -48,9 +51,15 @@ export async function POST(request: Request) {
       .webp({ quality: 82 })
       .toBuffer();
 
-    await writeFile(targetPath, out);
-    const url = PUBLIC_PREFIX + webpName;
-    const media = await prisma.media.create({ data: { url, filename: webpName, alt } });
+    // Upload to Vercel Blob (serverless filesystem is read-only)
+    const blob = await put(`uploads/${webpName}`, out, {
+      access: "public",
+      contentType: "image/webp",
+    });
+
+    const media = await prisma.media.create({
+      data: { url: blob.url, filename: webpName, alt },
+    });
     return NextResponse.json({ ok: true, media });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";
