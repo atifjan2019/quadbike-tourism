@@ -141,6 +141,11 @@ export default async function BlogPostPage(props: {
               <div
                 className="
                   text-[17px] leading-[30px] text-black/85
+                  max-w-full overflow-hidden break-words [overflow-wrap:anywhere]
+                  [&_*]:max-w-full
+                  [&_img]:h-auto
+                  [&_table]:block [&_table]:overflow-x-auto
+                  [&_pre]:overflow-x-auto [&_pre]:whitespace-pre-wrap
                   [&_p]:mt-5
                   [&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:text-[28px] sm:[&_h2]:text-[32px] [&_h2]:font-extrabold [&_h2]:leading-tight [&_h2]:tracking-tight
                   [&_h3]:mt-10 [&_h3]:mb-3 [&_h3]:text-[22px] [&_h3]:font-bold
