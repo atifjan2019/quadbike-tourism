@@ -128,13 +128,19 @@ export async function DELETE(request: Request) {
   if (!resolved.startsWith(PUBLIC_DIR + path.sep)) {
     return NextResponse.json({ ok: false, error: "Path traversal blocked" }, { status: 400 });
   }
+  // Try to remove the physical file. On Vercel the filesystem is read-only
+  // (EROFS) and orphaned DB rows may point at files that no longer exist
+  // (ENOENT) — in both cases we still want to clear the DB record below.
   try {
     await unlink(resolved);
   } catch (e) {
-    return NextResponse.json(
-      { ok: false, error: (e as Error).message },
-      { status: 404 }
-    );
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT" && code !== "EROFS" && code !== "EACCES") {
+      return NextResponse.json(
+        { ok: false, error: (e as Error).message },
+        { status: 500 }
+      );
+    }
   }
   // Remove any DB record pointing at the same URL
   await prisma.media.deleteMany({ where: { url: target } });
