@@ -86,12 +86,11 @@ export default async function BlogPostPage(props: {
         <section className="relative bg-brand-ink text-white overflow-hidden">
           {post.featuredImage && (
             <div className="absolute inset-0">
-              <SmartImage
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={post.featuredImage}
                 alt={post.title}
-                fill
-                sizes="100vw"
-                className="object-cover opacity-60"
+                className="absolute inset-0 w-full h-full object-cover opacity-60"
                 loading="eager"
                 fetchPriority="high"
               />

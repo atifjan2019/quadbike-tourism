@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "quadbiketourism.com", pathname: "/wp-content/uploads/**" },
       { protocol: "https", hostname: "www.quadbiketourism.com", pathname: "/wp-content/uploads/**" },
+      { protocol: "https", hostname: "**.public.blob.vercel-storage.com" },
     ],
   },
   async redirects() {
