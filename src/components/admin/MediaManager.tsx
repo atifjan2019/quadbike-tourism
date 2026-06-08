@@ -128,7 +128,7 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
             <Upload className="w-7 h-7 mx-auto text-black/40" />
             <p className="mt-2 font-bold">Drop images here or click to upload</p>
             <p className="text-xs text-black/50 mt-1">
-              JPG, PNG, WebP or AVIF. Max 8 MB each. Resized to max 1600px WebP and saved to <code>/public/uploads/</code>.
+              JPG, PNG, WebP or AVIF. Max 8 MB each. Resized to max 1600px WebP and saved to cloud storage.
             </p>
             <input
               ref={inputRef}
