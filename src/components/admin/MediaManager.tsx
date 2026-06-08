@@ -71,8 +71,14 @@ export default function MediaManager({ initial }: { initial: FileItem[] }) {
         const form = new FormData();
         form.append("file", f);
         const res = await fetch("/api/admin/media/upload", { method: "POST", body: form });
-        const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || "Upload failed");
+        const text = await res.text();
+        let data: { ok?: boolean; error?: string } = {};
+        try {
+          data = text ? JSON.parse(text) : {};
+        } catch {
+          throw new Error(text.slice(0, 300) || `Upload failed (HTTP ${res.status})`);
+        }
+        if (!res.ok || !data.ok) throw new Error(data.error || `Upload failed (HTTP ${res.status})`);
       }
       router.refresh();
     } catch (e) {
