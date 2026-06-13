@@ -9,13 +9,11 @@ export default function Hero() {
           <p className="font-display text-white text-[20px] sm:text-[28px] lg:text-[40px] leading-none tracking-[2px] mb-2 sm:mb-3">
             WELCOME TO
           </p>
-          <h1 className="font-display text-brand-yellow text-[44px] sm:text-[60px] lg:text-[84px] leading-[1] tracking-[1px] mb-5 sm:mb-7">
-            Desert Quad Biking &amp;
-            <br />
-            Dune Buggy Tours in Dubai
+          <h1 className="font-display text-brand-yellow text-[30px] sm:text-[40px] lg:text-[56px] leading-[1.05] tracking-[1px] mb-5 sm:mb-7">
+            Desert Quad Biking &amp; Dune Buggy Tours in Dubai
           </h1>
           <p className="text-white text-[15px] sm:text-[18px] lg:text-[22px] font-normal leading-snug mb-1 sm:mb-2">
-            Trusted Guranteed, Free Cancellation
+            Trusted Guaranteed, Free Cancellation
           </p>
           <div className="relative inline-block mx-auto lg:mx-0">
             <p className="text-white text-[17px] sm:text-[22px] lg:text-[28px] font-extrabold leading-snug">
