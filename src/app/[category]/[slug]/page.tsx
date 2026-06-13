@@ -18,6 +18,14 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+/** Trim to a max length on a word boundary, adding an ellipsis when cut. */
+function clampLen(s: string, max: number): string {
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd() + "…";
+}
+
 async function getTour(slug: string) {
   return prisma.tour.findFirst({
     where: { slug, status: "PUBLISHED" },
@@ -40,13 +48,26 @@ export async function generateMetadata(props: {
   const { slug } = await props.params;
   const tour = await getTour(slug);
   if (!tour) return { title: "Tour not found" };
+
+  // Prefer the tour's own SEO fields (admin-controlled source of truth); otherwise
+  // generate a compelling Dubai + value-prop + CTA template. `title.absolute`
+  // bypasses the layout's "%s | Quad Bike Tourism" suffix so titles stay ≤ 60 chars
+  // (and avoids a duplicated brand). Descriptions are capped at ≤ 160 chars.
+  const title = clampLen(tour.seoTitle ?? `${tour.title} in Dubai — Book Online`, 60);
+  const description = clampLen(
+    tour.seoDesc ??
+      tour.shortDesc ??
+      `Book the ${tour.title} in Dubai with Quad Bike Tourism — private tours, free pickup & drop-off and instant confirmation.`,
+    160
+  );
+
   return {
-    title: tour.seoTitle ?? `${tour.title} | Quad Bike Tourism`,
-    description: tour.seoDesc ?? tour.shortDesc ?? undefined,
+    title: { absolute: title },
+    description,
     alternates: { canonical: `/${tour.category.slug}/${tour.slug}/` },
     openGraph: {
-      title: tour.seoTitle ?? tour.title,
-      description: tour.seoDesc ?? tour.shortDesc ?? undefined,
+      title,
+      description,
       images: tour.featuredImage ? [tour.featuredImage] : undefined,
       type: "website",
     },

@@ -10,9 +10,9 @@ export default function Hero() {
             WELCOME TO
           </p>
           <h1 className="font-display text-brand-yellow text-[44px] sm:text-[60px] lg:text-[84px] leading-[1] tracking-[1px] mb-5 sm:mb-7">
-            QUAD BIKE
+            Desert Quad Biking &amp;
             <br />
-            TOURISM
+            Dune Buggy Tours in Dubai
           </h1>
           <p className="text-white text-[15px] sm:text-[18px] lg:text-[22px] font-normal leading-snug mb-1 sm:mb-2">
             Trusted Guranteed, Free Cancellation
@@ -25,6 +25,7 @@ export default function Hero() {
             <SmartImage
               src="/images/yellow-arrow.png"
               alt=""
+              aria-hidden
               width={180}
               height={120}
               sizes="180px"
@@ -53,6 +54,7 @@ export default function Hero() {
         <SmartImage
           src="/images/yellow-arrow.png"
           alt=""
+          aria-hidden
           width={220}
           height={140}
           sizes="220px"

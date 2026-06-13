@@ -65,6 +65,7 @@ export default async function ToursPage() {
             <SmartImage
               src="/images/buggy-hero.webp"
               alt=""
+              aria-hidden
               fill
               sizes="100vw"
               className="object-cover"

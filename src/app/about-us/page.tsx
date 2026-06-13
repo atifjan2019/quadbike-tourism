@@ -110,6 +110,7 @@ export default function AboutUsPage() {
             <SmartImage
               src="/images/buggy-hero.webp"
               alt=""
+              aria-hidden
               fill
               sizes="100vw"
               className="object-cover"

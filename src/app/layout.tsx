@@ -112,6 +112,8 @@ export default function RootLayout({
               "@id": `${SITE_URL}/#organization`,
               name: "Quad Bike Tourism",
               url: SITE_URL,
+              // Real business contact number shown on /contact-us (Phone | WhatsApp).
+              telephone: "+923448959905",
               logo: `${SITE_URL}/images/buggy-desert-1.png`,
               image: `${SITE_URL}/images/buggy-hero.webp`,
               description: DEFAULT_DESCRIPTION,
